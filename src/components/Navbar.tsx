@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Gallery", href: "/#gallery" },
   { label: "Reviews", href: "/#reviews" },
   { label: "Contact", href: "/#contact" },
+  { label: "Admin", href: "/admin" },
 ];
 
 export default function Navbar() {
@@ -26,6 +27,11 @@ export default function Navbar() {
       } else {
         window.location.href = href;
       }
+      return;
+    }
+
+    if (href.startsWith("/")) {
+      window.location.href = href;
     }
   };
 

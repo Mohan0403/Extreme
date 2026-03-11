@@ -1,18 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock, Car, User, Phone, Wrench, CheckCircle } from "lucide-react";
+import { CalendarDays, Clock, Car, User, Phone, Wrench, CheckCircle, Trash2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import { TIME_SLOTS, SERVICES } from "@/lib/bookings";
+import {
+  TIME_SLOTS,
+  SERVICES,
+  SCRIPT_URL,
+  getBookedSlots,
+  getBookings,
+  deleteBooking,
+  deleteBookingByDetails,
+  getFriendlyError,
+} from "@/lib/bookings";
 import { toast } from "sonner";
-
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycby4kXssusJyisJUQVSELXJCUlaqghgEQDztjMlGu4zePhfobdcUwXhh6sYzudN8Kdgp/exec";
 
 export default function BookAppointment() {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [carModel, setCarModel] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -20,7 +27,37 @@ export default function BookAppointment() {
   const [timeSlot, setTimeSlot] = useState("");
   const [slots, setSlots] = useState<{ slot: string; available: boolean }[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [cancelPhone, setCancelPhone] = useState("");
+  const [cancelDate, setCancelDate] = useState("");
+  const [cancelTimeSlot, setCancelTimeSlot] = useState("");
+  const [isCancelling, setIsCancelling] = useState(false);
   const availabilityErrorShownRef = useRef(false);
+
+  const normalizePhone = (value: string) => value.replace(/\D/g, "");
+  const phonesMatch = (left: string, right: string) => {
+    const a = normalizePhone(left);
+    const b = normalizePhone(right);
+    if (!a || !b) return false;
+    if (a === b) return true;
+    return a.slice(-10) === b.slice(-10);
+  };
+
+  const normalizeDate = (value: string) => value.replace(/\//g, "-").trim();
+  const normalizeTime = (value: string) => value.replace(/\s+/g, " ").trim().toUpperCase();
+
+  const dateMatches = (a: string, b: string) => {
+    const left = normalizeDate(a);
+    const right = normalizeDate(b);
+    if (left === right) return true;
+
+    const leftParts = left.split("-");
+    const rightParts = right.split("-");
+    if (leftParts.length !== 3 || rightParts.length !== 3) return false;
+
+    const [ly, lm, ld] = leftParts;
+    const [ry, rm, rd] = rightParts;
+    return ly === rd && lm === rm && ld === ry;
+  };
 
   const applyBookedSlots = (bookedSlots: string[]) => {
     setSlots(
@@ -32,17 +69,7 @@ export default function BookAppointment() {
   };
 
   const fetchBookedSlotsForDate = async (selectedDate: string): Promise<string[]> => {
-    const response = await fetch(
-      `${SCRIPT_URL}?action=getSlots&date=${encodeURIComponent(selectedDate)}&_ts=${Date.now()}`,
-      { cache: "no-store" }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch slots");
-    }
-
-    const data: { bookedSlots?: string[] } = await response.json();
-    return Array.isArray(data.bookedSlots) ? data.bookedSlots : [];
+    return getBookedSlots(selectedDate);
   };
 
   useEffect(() => {
@@ -99,7 +126,7 @@ export default function BookAppointment() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !phone || !carModel || !serviceType || !date || !timeSlot) {
+    if (!name || !email || !phone || !carModel || !serviceType || !date || !timeSlot) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -120,6 +147,7 @@ export default function BookAppointment() {
         body: JSON.stringify({
           action: "book",
           name,
+          email,
           phone,
           car_model: carModel,
           service: serviceType,
@@ -163,7 +191,7 @@ export default function BookAppointment() {
       applyBookedSlots([...latestBookedSlots, timeSlot]);
       setTimeSlot("");
       setSubmitted(true);
-      toast.success("Booking confirmed!");
+      toast.success("Booking confirmed. Check your email for confirmation.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unable to complete booking. Please try again.";
       toast.error(message);
@@ -181,6 +209,60 @@ export default function BookAppointment() {
     } catch {
       setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false })));
       toast.error("Could not refresh slot availability. Please refresh and try again.");
+    }
+  };
+
+  const handleCancelBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!cancelPhone || !cancelDate || !cancelTimeSlot) {
+      toast.error("Enter phone, date and time slot to cancel booking");
+      return;
+    }
+
+    try {
+      setIsCancelling(true);
+
+      let deleted = false;
+
+      // Preferred path: find exact booking and delete by id (same API owner uses).
+      try {
+        const allBookings = await getBookings();
+        const target = allBookings.find(
+          (booking) =>
+            phonesMatch(booking.phone, cancelPhone) &&
+            dateMatches(booking.date, cancelDate) &&
+            normalizeTime(booking.timeSlot) === normalizeTime(cancelTimeSlot) &&
+            booking.status === "booked"
+        );
+
+        if (target?.id) {
+          await deleteBooking(target.id);
+          deleted = true;
+        }
+      } catch {
+        // Fall back to details-based delete for older scripts.
+      }
+
+      if (!deleted) {
+        await deleteBookingByDetails({
+          phone: cancelPhone,
+          date: cancelDate,
+          timeSlot: cancelTimeSlot,
+        });
+      }
+
+      toast.success("Booking cancelled successfully");
+      setCancelTimeSlot("");
+
+      if (date === cancelDate) {
+        const bookedSlots = await fetchBookedSlotsForDate(date);
+        applyBookedSlots(bookedSlots);
+      }
+    } catch (error) {
+      toast.error(getFriendlyError(error, "Unable to cancel booking"));
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -258,6 +340,20 @@ export default function BookAppointment() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 XXXXX XXXXX"
+                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
+                <Mail className="h-4 w-4 text-primary" /> Email Address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="yourname@example.com"
                 className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 required
               />
@@ -353,6 +449,73 @@ export default function BookAppointment() {
 
             <Button type="submit" variant="gold" size="lg" className="w-full shine-effect">
               Confirm Booking
+            </Button>
+          </motion.form>
+
+          <motion.form
+            onSubmit={handleCancelBooking}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="glass rounded-2xl p-8 space-y-5 mt-8"
+          >
+            <div>
+              <p className="text-primary font-heading text-xs tracking-[0.25em] uppercase mb-2">Manage Booking</p>
+              <h2 className="font-heading text-2xl font-bold">Cancel Existing Booking</h2>
+              <p className="text-muted-foreground text-sm mt-1">
+                Enter the same phone number, date, and slot used during booking.
+              </p>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
+                <Phone className="h-4 w-4 text-primary" /> Phone Number
+              </label>
+              <input
+                type="tel"
+                value={cancelPhone}
+                onChange={(e) => setCancelPhone(e.target.value)}
+                placeholder="+91 XXXXX XXXXX"
+                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
+                <CalendarDays className="h-4 w-4 text-primary" /> Date
+              </label>
+              <input
+                type="date"
+                value={cancelDate}
+                onChange={(e) => setCancelDate(e.target.value)}
+                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
+                <Clock className="h-4 w-4 text-primary" /> Time Slot
+              </label>
+              <select
+                value={cancelTimeSlot}
+                onChange={(e) => setCancelTimeSlot(e.target.value)}
+                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                required
+              >
+                <option value="">Select booked slot</option>
+                {TIME_SLOTS.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <Button type="submit" variant="destructive" size="lg" className="w-full" disabled={isCancelling}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isCancelling ? "Cancelling..." : "Delete Booking Slot"}
             </Button>
           </motion.form>
         </div>

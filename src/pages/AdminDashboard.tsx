@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, Users, Trash2, CheckCircle, LogIn, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getBookings, deleteBooking, markCompleted, TIME_SLOTS, type Booking } from "@/lib/bookings";
+import {
+  getBookings,
+  deleteBooking,
+  markCompleted,
+  TIME_SLOTS,
+  getFriendlyError,
+  type Booking,
+} from "@/lib/bookings";
 import { toast } from "sonner";
 
 const ADMIN_USER = "admin";
@@ -15,11 +22,43 @@ export default function AdminDashboard() {
   const [showPassword, setShowPassword] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filterDate, setFilterDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      setBookings(getBookings());
-    }
+    if (!isLoggedIn) return;
+
+    let isMounted = true;
+
+    const refreshBookings = async (silent?: boolean) => {
+      if (!silent) {
+        setIsLoading(true);
+      }
+
+      try {
+        const latest = await getBookings();
+        if (!isMounted) return;
+        setBookings(latest);
+      } catch (error) {
+        if (!isMounted) return;
+        toast.error(getFriendlyError(error, "Could not load bookings"));
+      } finally {
+        if (!isMounted) return;
+        if (!silent) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void refreshBookings();
+
+    const pollId = window.setInterval(() => {
+      void refreshBookings(true);
+    }, 5000);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(pollId);
+    };
   }, [isLoggedIn]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -32,16 +71,29 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDelete = (id: string) => {
-    deleteBooking(id);
-    setBookings(getBookings());
-    toast.success("Booking deleted");
+  const refreshBookings = async () => {
+    const latest = await getBookings();
+    setBookings(latest);
   };
 
-  const handleComplete = (id: string) => {
-    markCompleted(id);
-    setBookings(getBookings());
-    toast.success("Marked as completed");
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteBooking(id);
+      await refreshBookings();
+      toast.success("Booking deleted");
+    } catch (error) {
+      toast.error(getFriendlyError(error, "Could not delete booking"));
+    }
+  };
+
+  const handleComplete = async (id: string) => {
+    try {
+      await markCompleted(id);
+      await refreshBookings();
+      toast.success("Marked as completed");
+    } catch (error) {
+      toast.error(getFriendlyError(error, "Could not update booking"));
+    }
   };
 
   const today = new Date().toISOString().split("T")[0];
@@ -149,7 +201,7 @@ export default function AdminDashboard() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  {["Name", "Phone", "Car", "Service", "Date", "Time", "Status", "Actions"].map((h) => (
+                  {["Name", "Email", "Phone", "Car", "Service", "Date", "Time", "Status", "Actions"].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-heading font-semibold text-muted-foreground uppercase tracking-wider">
                       {h}
                     </th>
@@ -157,9 +209,15 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.length === 0 ? (
+                {isLoading ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-12 text-muted-foreground">
+                    <td colSpan={9} className="text-center py-12 text-muted-foreground">
+                      Loading bookings...
+                    </td>
+                  </tr>
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="text-center py-12 text-muted-foreground">
                       No bookings found
                     </td>
                   </tr>
@@ -167,6 +225,7 @@ export default function AdminDashboard() {
                   filtered.map((booking) => (
                     <tr key={booking.id} className="border-b border-border/50 hover:bg-secondary/30 transition-colors">
                       <td className="px-4 py-3 text-sm font-medium">{booking.name}</td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">{booking.email || "-"}</td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">{booking.phone}</td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">{booking.carModel}</td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">{booking.serviceType}</td>
