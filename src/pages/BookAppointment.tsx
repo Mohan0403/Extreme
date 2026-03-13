@@ -22,10 +22,10 @@ export default function BookAppointment() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [carModel, setCarModel] = useState("");
-  const [serviceType, setServiceType] = useState("");
+  const [serviceTypes, setServiceTypes] = useState<string[]>([]);
   const [date, setDate] = useState("");
   const [timeSlot, setTimeSlot] = useState("");
-  const [slots, setSlots] = useState<{ slot: string; available: boolean }[]>([]);
+  const [slots, setSlots] = useState<{ slot: string; available: boolean; isBooked: boolean; isPast: boolean }[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [cancelPhone, setCancelPhone] = useState("");
   const [cancelDate, setCancelDate] = useState("");
@@ -45,6 +45,32 @@ export default function BookAppointment() {
   const normalizeDate = (value: string) => value.replace(/\//g, "-").trim();
   const normalizeTime = (value: string) => value.replace(/\s+/g, " ").trim().toUpperCase();
 
+  const getLocalDateToken = (value: Date) => {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, "0");
+    const day = String(value.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const parseSlotDateTime = (selectedDate: string, slot: string): Date | null => {
+    const match = slot.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return null;
+
+    const [, hoursToken, minutesToken, meridiem] = match;
+    let hours = Number(hoursToken);
+    const minutes = Number(minutesToken);
+
+    if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
+    if (meridiem.toUpperCase() === "PM" && hours !== 12) hours += 12;
+    if (meridiem.toUpperCase() === "AM" && hours === 12) hours = 0;
+
+    const slotDate = new Date(`${selectedDate}T00:00:00`);
+    if (Number.isNaN(slotDate.getTime())) return null;
+
+    slotDate.setHours(hours, minutes, 0, 0);
+    return slotDate;
+  };
+
   const dateMatches = (a: string, b: string) => {
     const left = normalizeDate(a);
     const right = normalizeDate(b);
@@ -59,11 +85,18 @@ export default function BookAppointment() {
     return ly === rd && lm === rm && ld === ry;
   };
 
-  const applyBookedSlots = (bookedSlots: string[]) => {
+  const applyBookedSlots = (bookedSlots: string[], selectedDate: string) => {
+    const now = new Date();
+    const isToday = selectedDate === getLocalDateToken(now);
+
     setSlots(
       TIME_SLOTS.map((slot) => ({
         slot,
-        available: !bookedSlots.includes(slot),
+        isBooked: bookedSlots.includes(slot),
+        isPast: isToday ? (parseSlotDateTime(selectedDate, slot)?.getTime() ?? Number.MAX_SAFE_INTEGER) <= now.getTime() : false,
+        available:
+          !bookedSlots.includes(slot) &&
+          !(isToday ? (parseSlotDateTime(selectedDate, slot)?.getTime() ?? Number.MAX_SAFE_INTEGER) <= now.getTime() : false),
       }))
     );
   };
@@ -84,7 +117,7 @@ export default function BookAppointment() {
         if (!isMounted) return;
 
         availabilityErrorShownRef.current = false;
-        applyBookedSlots(bookedSlots);
+        applyBookedSlots(bookedSlots, date);
 
         if (bookedSlots.includes(timeSlot)) {
           setTimeSlot("");
@@ -92,8 +125,8 @@ export default function BookAppointment() {
       } catch {
         if (!isMounted) return;
 
-        // Fail closed: prevent booking when availability cannot be verified.
-        setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false })));
+        
+        setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false, isBooked: false, isPast: false })));
         if (!availabilityErrorShownRef.current) {
           toast.error("Could not load slot availability. Please refresh and try again.");
           availabilityErrorShownRef.current = true;
@@ -121,12 +154,12 @@ export default function BookAppointment() {
     };
   }, [date]);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateToken(new Date());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !email || !phone || !carModel || !serviceType || !date || !timeSlot) {
+    if (!name || !email || !phone || !carModel || serviceTypes.length === 0 || !date || !timeSlot) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -135,14 +168,22 @@ export default function BookAppointment() {
       const latestBookedSlots = await fetchBookedSlotsForDate(date);
       if (latestBookedSlots.includes(timeSlot)) {
         toast.error("This time slot is already booked. Please choose another slot.");
-        applyBookedSlots(latestBookedSlots);
+        applyBookedSlots(latestBookedSlots, date);
+        setTimeSlot("");
+        return;
+      }
+
+      const slotDate = parseSlotDateTime(date, timeSlot);
+      if (date === today && slotDate && slotDate.getTime() <= Date.now()) {
+        toast.error("Selected time slot has already passed. Please choose a future time.");
+        applyBookedSlots(latestBookedSlots, date);
         setTimeSlot("");
         return;
       }
 
       const response = await fetch(SCRIPT_URL, {
         method: "POST",
-        // Keep as text/plain to avoid CORS preflight while sending JSON payload.
+      
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
           action: "book",
@@ -150,7 +191,7 @@ export default function BookAppointment() {
           email,
           phone,
           car_model: carModel,
-          service: serviceType,
+          service: serviceTypes.join(", "),
           date,
           time: timeSlot,
         }),
@@ -177,7 +218,7 @@ export default function BookAppointment() {
         toast.error("This time slot is already booked. Please choose another slot.");
 
         const bookedSlots = await fetchBookedSlotsForDate(date);
-        applyBookedSlots(bookedSlots);
+        applyBookedSlots(bookedSlots, date);
         setTimeSlot("");
         return;
       }
@@ -188,7 +229,7 @@ export default function BookAppointment() {
       }
 
       // Immediately lock this slot in UI for the currently selected date.
-      applyBookedSlots([...latestBookedSlots, timeSlot]);
+      applyBookedSlots([...latestBookedSlots, timeSlot], date);
       setTimeSlot("");
       setSubmitted(true);
       toast.success("Booking confirmed. Check your email for confirmation.");
@@ -205,9 +246,9 @@ export default function BookAppointment() {
 
     try {
       const bookedSlots = await fetchBookedSlotsForDate(date);
-      applyBookedSlots(bookedSlots);
+      applyBookedSlots(bookedSlots, date);
     } catch {
-      setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false })));
+      setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false, isBooked: false, isPast: false })));
       toast.error("Could not refresh slot availability. Please refresh and try again.");
     }
   };
@@ -257,7 +298,7 @@ export default function BookAppointment() {
 
       if (date === cancelDate) {
         const bookedSlots = await fetchBookedSlotsForDate(date);
-        applyBookedSlots(bookedSlots);
+        applyBookedSlots(bookedSlots, date);
       }
     } catch (error) {
       toast.error(getFriendlyError(error, "Unable to cancel booking"));
@@ -379,17 +420,37 @@ export default function BookAppointment() {
               <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
                 <Wrench className="h-4 w-4 text-primary" /> Service Type
               </label>
-              <select
-                value={serviceType}
-                onChange={(e) => setServiceType(e.target.value)}
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                required
-              >
-                <option value="">Select a service</option>
-                {SERVICES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {SERVICES.map((service) => {
+                  const checked = serviceTypes.includes(service);
+                  return (
+                    <label
+                      key={service}
+                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors ${
+                        checked
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-secondary hover:border-primary"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(e) => {
+                          const next = e.target.checked
+                            ? [...serviceTypes, service]
+                            : serviceTypes.filter((value) => value !== service);
+                          setServiceTypes(next);
+                        }}
+                        className="h-4 w-4 accent-primary"
+                      />
+                      <span className="text-sm">{service}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              {serviceTypes.length === 0 && (
+                <p className="text-xs text-muted-foreground mt-2">Select one or more services.</p>
+              )}
             </div>
 
             {/* Date */}
@@ -418,7 +479,7 @@ export default function BookAppointment() {
                   <Clock className="h-4 w-4 text-primary" /> Available Time Slots
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {slots.map(({ slot, available }) => (
+                  {slots.map(({ slot, available, isBooked }) => (
                     <button
                       key={slot}
                       type="button"
@@ -429,7 +490,9 @@ export default function BookAppointment() {
                           ? "bg-primary text-primary-foreground glow-gold"
                           : available
                           ? "bg-secondary text-foreground hover:border-primary border border-border"
-                          : "bg-destructive/20 text-destructive line-through cursor-not-allowed border border-destructive/30"
+                          : isBooked
+                          ? "bg-destructive/20 text-destructive line-through cursor-not-allowed border border-destructive/30"
+                          : "bg-muted text-muted-foreground cursor-not-allowed border border-border/70"
                       }`}
                     >
                       {slot}
@@ -442,6 +505,9 @@ export default function BookAppointment() {
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="h-2 w-2 rounded-full bg-destructive/30" /> Booked
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-muted border border-border/70" /> Past Time
                   </span>
                 </div>
               </motion.div>
