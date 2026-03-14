@@ -6,49 +6,49 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4.3%;
+    --background: 210 8% 15%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 10.2%;
+    --card: 210 7% 20%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 10.2%;
+    --popover: 210 7% 20%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 51 100% 50%;
-    --primary-foreground: 0 0% 4.3%;
+    --primary-foreground: 210 8% 15%;
 
-    --secondary: 0 0% 10.2%;
+    --secondary: 210 7% 20%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 14%;
+    --muted: 210 6% 24%;
     --muted-foreground: 0 0% 63.9%;
 
     --accent: 51 100% 50%;
-    --accent-foreground: 0 0% 4.3%;
+    --accent-foreground: 210 8% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
+    --border: 210 6% 30%;
+    --input: 210 6% 30%;
     --ring: 51 100% 50%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 6%;
+    --sidebar-background: 210 8% 17%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 51 100% 50%;
-    --sidebar-primary-foreground: 0 0% 4.3%;
-    --sidebar-accent: 0 0% 14%;
+    --sidebar-primary-foreground: 210 8% 15%;
+    --sidebar-accent: 210 6% 24%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 18%;
+    --sidebar-border: 210 6% 30%;
     --sidebar-ring: 51 100% 50%;
 
     --gold: 51 100% 50%;
     --gold-dark: 43 96% 40%;
-    --surface: 0 0% 7%;
-    --surface-light: 0 0% 12%;
+    --surface: 210 8% 18%;
+    --surface-light: 210 6% 24%;
   }
 }
 
@@ -74,13 +74,13 @@
     background-image: linear-gradient(135deg, hsl(51 100% 50%), hsl(43 96% 40%));
   }
   .bg-surface {
-    background-color: hsl(0 0% 7%);
+    background-color: hsl(var(--surface));
   }
   .bg-surface-light {
-    background-color: hsl(0 0% 12%);
+    background-color: hsl(var(--surface-light));
   }
   .glass {
-    background: hsla(0, 0%, 10%, 0.6);
+    background: hsla(210, 7%, 20%, 0.6);
     backdrop-filter: blur(20px);
     border: 1px solid hsla(0, 0%, 100%, 0.08);
   }
@@ -127,10 +127,10 @@ html {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(0 0% 4.3%);
+  background: hsl(210 8% 15%);
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(0 0% 20%);
+  background: hsl(210 6% 32%);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {

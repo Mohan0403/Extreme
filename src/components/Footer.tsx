@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Instagram } from "lucide-react";
 import logo from "@/assets/logo.jpeg";
 
 export default function Footer() {
@@ -38,6 +39,15 @@ export default function Footer() {
               <p>6, Arcot Rd, Virugambakkam</p>
               <p>Chennai, Tamil Nadu 600092</p>
               <a href="tel:+919884149111" className="hover:text-primary transition-colors">+91 98841 49111</a>
+              <a
+                href="https://www.instagram.com/xtremecarcarechennai?igsh=MW01YWw4OWx3bXNteg=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 hover:text-primary transition-colors"
+              >
+                <Instagram className="h-4 w-4" />
+                @xtremecarcarechennai
+              </a>
               <p>Mon – Sun: 9 AM – 11 PM</p>
             </div>
           </div>

@@ -43,7 +43,7 @@ export default function AboutSection() {
           >
             <div className="relative rounded-2xl overflow-hidden">
               <img
-                src="/images/shop-main.jpg"
+                src="/images/hero-slider/hero1.jpeg"
                 alt="Xtreme Car Care shop"
                 className="w-full h-80 object-cover rounded-2xl"
               />

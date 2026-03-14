@@ -1,20 +1,82 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const heroImages = [
+  "/images/hero-slider/hero1.jpeg",
+  "/images/hero-slider/hero2.jpeg",
+  "/images/hero-slider/hero3.png",
+  "/images/hero-slider/hero4.jpeg",
+  "/images/hero-slider/hero5.jpeg",
+];
+
 export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setCurrent((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+      {/* Auto-rotating background — cross-fade + Ken Burns slow pan/zoom */}
       <div className="absolute inset-0">
-        <img
-          src="/images/hero-bg.jpg"
-          alt="Xtreme Car Care detailing"
-          className="h-full w-full object-cover"
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={heroImages[current]}
+            className="absolute inset-0"
+            initial={{ opacity: 0, filter: "blur(8px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, filter: "blur(6px)" }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+          >
+            {/* Ken Burns: slow continuous zoom-pan while this slide is active */}
+            <motion.img
+              src={heroImages[current]}
+              alt="Xtreme Car Care detailing"
+              className="absolute inset-0 h-full w-full object-cover object-center brightness-95 contrast-110 saturate-110"
+              initial={{ scale: 1.12, x: "2%", y: "1%" }}
+              animate={{ scale: 1.0, x: "-2%", y: "-1%" }}
+              transition={{ duration: 6, ease: "linear" }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Moving gold light-sweep */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          initial={{ x: "-100%" }}
+          animate={{ x: "200%" }}
+          transition={{ duration: 4, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+          style={{
+            background: "linear-gradient(105deg, transparent 40%, hsla(51,100%,50%,0.07) 50%, transparent 60%)",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-background/40" />
+
+        {/* Vignette */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%)" }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/30 to-background/45" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/35 via-transparent to-background/20" />
+      </div>
+
+      {/* Slide indicator dots */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {heroImages.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setCurrent(i)}
+            aria-label={`Slide ${i + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${
+              i === current ? "w-8 bg-primary" : "w-2 bg-white/40 hover:bg-white/70"
+            }`}
+          />
+        ))}
       </div>
 
       {/* Animated gold line */}
@@ -51,7 +113,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.8 }}
-            className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10"
+            className="text-foreground/90 text-lg md:text-xl max-w-2xl mx-auto mb-10"
           >
             Experience world-class car care with precision detailing, ceramic coating, and expert restoration services.
           </motion.p>
