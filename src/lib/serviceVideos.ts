@@ -13,7 +13,7 @@ export const serviceVideos: Record<string, ServiceVideoConfig> = {
     videoEmbedUrl: "",
   },
   "Paint Protection Film": {
-    videoSrc: "",
+    videoSrc: "/videos/services/paint-polishing-film.mp4",
     videoEmbedUrl: "",
   },
   "Car Polishing & Detailing": {

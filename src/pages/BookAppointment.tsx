@@ -1,257 +1,660 @@
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { CalendarDays, Clock, Car, User, Phone, Wrench, CheckCircle, Trash2, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  CalendarDays,
+  Car,
+  CarFront,
+  Check,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  Clock,
+  Droplets,
+  Gauge,
+  Lightbulb,
+  Loader2,
+  Mail,
+  Minus,
+  Paintbrush,
+  Phone,
+  Plus,
+  Shield,
+  Sparkles,
+  Tag,
+  Trash2,
+  Truck,
+  User,
+  Wind,
+  Wrench,
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { Button } from "@/components/ui/button";
 import {
   TIME_SLOTS,
-  SERVICES,
-  SCRIPT_URL,
-  getBookedSlots,
-  getBookings,
   deleteBooking,
   deleteBookingByDetails,
+  getBookings,
   getFriendlyError,
 } from "@/lib/bookings";
 import { toast } from "sonner";
 
+const API_URL =
+  "https://script.google.com/macros/s/AKfycby4kXssusJyisJUQVSELXJCUlaqghgEQDztjMlGu4zePhfobdcUwXhh6sYzudN8Kdgp/exec";
+
+const DENT_PRICE = 500;
+const TOTAL_STEPS = 9;
+
+interface Service {
+  service_id: string;
+  service_name: string;
+  base_price: number;
+}
+
+interface VehicleType {
+  vehicle_type_id: string;
+  vehicle_type: string;
+  price_multiplier: number;
+}
+
+interface Addon {
+  addon_id: string;
+  addon_name: string;
+  price: number;
+}
+
+interface Slot {
+  time: string;
+  available: boolean;
+}
+
+interface PriceSummary {
+  basePrice: number;
+  multiplier: number;
+  serviceTotal: number;
+  dentCount: number;
+  dentPrice: number;
+  dentTotal: number;
+  addonTotal: number;
+  totalPrice: number;
+}
+
+interface Confirmation {
+  bookingId: string;
+  service: string;
+  vehicleType: string;
+  date: string;
+  timeSlot: string;
+  price: number;
+  status: string;
+  message: string;
+  emailSent?: boolean;
+  emailStatus?: string;
+}
+
+interface Customer {
+  name: string;
+  phone: string;
+  email: string;
+  carModel: string;
+  notes: string;
+}
+
+interface BookingWizardState {
+  services: string[];
+  vehicleType: string | null;
+  dents: number;
+  addons: string[];
+  date: string | null;
+  timeSlot: string | null;
+  customer: Customer;
+  calculatedPrice: number;
+}
+
+const INITIAL_STATE: BookingWizardState = {
+  services: [],
+  vehicleType: null,
+  dents: 1,
+  addons: [],
+  date: null,
+  timeSlot: null,
+  calculatedPrice: 0,
+  customer: {
+    name: "",
+    phone: "",
+    email: "",
+    carModel: "",
+    notes: "",
+  },
+};
+
+const STEP_TITLES = [
+  "Select Vehicle",
+  "Choose Service",
+  "Dent Count",
+  "Add-ons",
+  "Select Date",
+  "Select Time",
+  "Customer Details",
+  "Review",
+  "Confirmation",
+];
+
+const MOCK_DATA = {
+  services: [
+    { service_id: "SVC001", service_name: "Paint Protection Film", base_price: 25000 },
+    { service_id: "SVC002", service_name: "Ceramic Coating", base_price: 15000 },
+    { service_id: "SVC003", service_name: "Interior Detailing", base_price: 3000 },
+    { service_id: "SVC004", service_name: "Exterior Detailing", base_price: 2500 },
+    { service_id: "SVC005", service_name: "Dent Removal", base_price: 1500 },
+  ] as Service[],
+  vehicleTypes: [
+    { vehicle_type_id: "VT001", vehicle_type: "Sedan", price_multiplier: 1.0 },
+    { vehicle_type_id: "VT002", vehicle_type: "SUV", price_multiplier: 1.3 },
+    { vehicle_type_id: "VT003", vehicle_type: "Sports Car", price_multiplier: 1.5 },
+    { vehicle_type_id: "VT004", vehicle_type: "Truck", price_multiplier: 1.4 },
+  ] as VehicleType[],
+  addons: [
+    { addon_id: "ADD001", addon_name: "Interior Cleaning", price: 1500 },
+    { addon_id: "ADD002", addon_name: "Wheel Coating", price: 2000 },
+    { addon_id: "ADD003", addon_name: "Headlight Restoration", price: 1800 },
+  ] as Addon[],
+  bookedSlots: {} as Record<string, string[]>,
+};
+
+const ALL_SLOTS = ["09:00", "10:30", "12:00", "14:00", "16:00", "18:00"];
+
+const serviceIcons: Record<string, typeof Shield> = {
+  "Paint Protection Film": Shield,
+  "Ceramic Coating": Sparkles,
+  "Interior Detailing": Paintbrush,
+  "Exterior Detailing": Droplets,
+  "Dent Removal": Wrench,
+};
+
+const vehicleIcons: Record<string, typeof Car> = {
+  Sedan: Car,
+  SUV: CarFront,
+  "Sports Car": Gauge,
+  Truck: Truck,
+};
+
+const addonIcons: Record<string, typeof Wind> = {
+  "Interior Cleaning": Wind,
+  "Wheel Coating": Circle,
+  "Headlight Restoration": Lightbulb,
+};
+
+function isDemo() {
+  return !API_URL || API_URL.trim() === "";
+}
+
+async function apiCall(action: string, params: Record<string, string | number> = {}) {
+  if (isDemo()) {
+    return mockApiCall(action, params);
+  }
+
+  const url = new URL(API_URL);
+  url.searchParams.set("action", action);
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) {
+      url.searchParams.set(key, String(value));
+    }
+  });
+
+  try {
+    const response = await fetch(url.toString());
+    return await response.json();
+  } catch (err) {
+    return {
+      success: false,
+      error: "Network error: " + (err instanceof Error ? err.message : String(err)),
+    };
+  }
+}
+
+function mockApiCall(action: string, params: Record<string, string | number>) {
+  return new Promise<{ success: boolean; data?: unknown; error?: string }>((resolve) => {
+    setTimeout(() => {
+      switch (action) {
+        case "getServices":
+          resolve({ success: true, data: MOCK_DATA.services });
+          break;
+        case "getVehicleTypes":
+          resolve({ success: true, data: MOCK_DATA.vehicleTypes });
+          break;
+        case "getAddons":
+          resolve({ success: true, data: MOCK_DATA.addons });
+          break;
+        case "getSlots": {
+          const date = String(params.date ?? "");
+          const booked = MOCK_DATA.bookedSlots[date] || [];
+          resolve({
+            success: true,
+            data: ALL_SLOTS.map((time) => ({ time, available: !booked.includes(time) })),
+          });
+          break;
+        }
+        case "calculatePrice": {
+          const selectedServices = String(params.service || "")
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+          const vehicle = MOCK_DATA.vehicleTypes.find((v) => v.vehicle_type === params.vehicleType);
+          const basePrice = selectedServices.reduce((sum, serviceName) => {
+            const service = MOCK_DATA.services.find((s) => s.service_name === serviceName);
+            return sum + (service ? service.base_price : 0);
+          }, 0);
+          const multiplier = vehicle ? vehicle.price_multiplier : 1;
+          const dents = parseInt(String(params.dents || 0), 10) || 0;
+
+          let addonTotal = 0;
+          if (params.addons) {
+            String(params.addons)
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean)
+              .forEach((name) => {
+                const addon = MOCK_DATA.addons.find((a) => a.addon_name === name);
+                addonTotal += addon ? addon.price : 0;
+              });
+          }
+
+          const serviceTotal = basePrice * multiplier;
+          const dentTotal = dents * DENT_PRICE;
+
+          resolve({
+            success: true,
+            data: {
+              basePrice,
+              multiplier,
+              serviceTotal,
+              dentCount: dents,
+              dentPrice: DENT_PRICE,
+              dentTotal,
+              addonTotal,
+              totalPrice: serviceTotal + dentTotal + addonTotal,
+            } as PriceSummary,
+          });
+          break;
+        }
+        case "createBooking": {
+          const bookingId = "BK-" + Math.floor(100000 + Math.random() * 900000);
+          const date = String(params.date || "");
+          const timeSlot = String(params.timeSlot || "");
+          if (!MOCK_DATA.bookedSlots[date]) {
+            MOCK_DATA.bookedSlots[date] = [];
+          }
+          MOCK_DATA.bookedSlots[date].push(timeSlot);
+
+          resolve({
+            success: true,
+            data: {
+              bookingId,
+              service: params.service,
+              vehicleType: params.vehicleType,
+              date,
+              timeSlot,
+              price: Number(params.price || 0),
+              status: "Confirmed",
+              message: "Booking confirmed successfully!",
+            } as Confirmation,
+          });
+          break;
+        }
+        default:
+          resolve({ success: false, error: "Unknown action" });
+      }
+    }, 300);
+  });
+}
+
+function formatDisplayDate(dateStr: string | null) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-IN", {
+    weekday: "short",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function getTodayStr() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function normalizePhone(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function phonesMatch(left: string, right: string) {
+  const a = normalizePhone(left);
+  const b = normalizePhone(right);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  return a.slice(-10) === b.slice(-10);
+}
+
+function normalizeDate(value: string) {
+  return value.replace(/\//g, "-").trim();
+}
+
+function normalizeTime(value: string) {
+  return value.replace(/\s+/g, " ").trim().toUpperCase();
+}
+
+function dateMatches(a: string, b: string) {
+  const left = normalizeDate(a);
+  const right = normalizeDate(b);
+  if (left === right) return true;
+
+  const leftParts = left.split("-");
+  const rightParts = right.split("-");
+  if (leftParts.length !== 3 || rightParts.length !== 3) return false;
+
+  const [ly, lm, ld] = leftParts;
+  const [ry, rm, rd] = rightParts;
+  return ly === rd && lm === rm && ld === ry;
+}
+
+function OptionCard({
+  selected,
+  onClick,
+  title,
+  subtitle,
+  Icon,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  title: string;
+  subtitle?: string;
+  Icon: typeof Car;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative rounded-xl border p-4 text-left transition-all duration-200 ${
+        selected
+          ? "border-primary bg-primary/10 shadow-[0_0_20px_hsla(51,100%,50%,0.18)]"
+          : "border-border bg-secondary/70 hover:border-primary/50"
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <span
+          className={`h-10 w-10 rounded-lg flex items-center justify-center ${
+            selected ? "bg-primary/20" : "bg-secondary"
+          }`}
+        >
+          <Icon className={`h-5 w-5 ${selected ? "text-primary" : "text-muted-foreground"}`} />
+        </span>
+        <div>
+          <p className="font-heading font-semibold text-sm">{title}</p>
+          {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+        </div>
+      </div>
+      {selected && (
+        <span className="absolute top-2 right-2 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+          <Check className="h-3.5 w-3.5 text-primary-foreground" />
+        </span>
+      )}
+    </button>
+  );
+}
+
 export default function BookAppointment() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [carModel, setCarModel] = useState("");
-  const [serviceTypes, setServiceTypes] = useState<string[]>([]);
-  const [date, setDate] = useState("");
-  const [timeSlot, setTimeSlot] = useState("");
-  const [slots, setSlots] = useState<{ slot: string; available: boolean; isBooked: boolean; isPast: boolean }[]>([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState(1);
+  const [state, setState] = useState<BookingWizardState>(INITIAL_STATE);
+  const [services, setServices] = useState<Service[]>([]);
+  const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
+  const [addons, setAddons] = useState<Addon[]>([]);
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [price, setPrice] = useState<PriceSummary | null>(null);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [loadingPrice, setLoadingPrice] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
+
   const [cancelPhone, setCancelPhone] = useState("");
   const [cancelDate, setCancelDate] = useState("");
   const [cancelTimeSlot, setCancelTimeSlot] = useState("");
   const [isCancelling, setIsCancelling] = useState(false);
-  const availabilityErrorShownRef = useRef(false);
 
-  const normalizePhone = (value: string) => value.replace(/\D/g, "");
-  const phonesMatch = (left: string, right: string) => {
-    const a = normalizePhone(left);
-    const b = normalizePhone(right);
-    if (!a || !b) return false;
-    if (a === b) return true;
-    return a.slice(-10) === b.slice(-10);
-  };
+  const progress = (step / TOTAL_STEPS) * 100;
 
-  const normalizeDate = (value: string) => value.replace(/\//g, "-").trim();
-  const normalizeTime = (value: string) => value.replace(/\s+/g, " ").trim().toUpperCase();
+  const getNextStep = useCallback(
+    (current: number) => {
+      return current + 1;
+    },
+    []
+  );
 
-  const getLocalDateToken = (value: Date) => {
-    const year = value.getFullYear();
-    const month = String(value.getMonth() + 1).padStart(2, "0");
-    const day = String(value.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  const getPrevStep = useCallback(
+    (current: number) => {
+      return current - 1;
+    },
+    []
+  );
 
-  const parseSlotDateTime = (selectedDate: string, slot: string): Date | null => {
-    const match = slot.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-    if (!match) return null;
-
-    const [, hoursToken, minutesToken, meridiem] = match;
-    let hours = Number(hoursToken);
-    const minutes = Number(minutesToken);
-
-    if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
-    if (meridiem.toUpperCase() === "PM" && hours !== 12) hours += 12;
-    if (meridiem.toUpperCase() === "AM" && hours === 12) hours = 0;
-
-    const slotDate = new Date(`${selectedDate}T00:00:00`);
-    if (Number.isNaN(slotDate.getTime())) return null;
-
-    slotDate.setHours(hours, minutes, 0, 0);
-    return slotDate;
-  };
-
-  const dateMatches = (a: string, b: string) => {
-    const left = normalizeDate(a);
-    const right = normalizeDate(b);
-    if (left === right) return true;
-
-    const leftParts = left.split("-");
-    const rightParts = right.split("-");
-    if (leftParts.length !== 3 || rightParts.length !== 3) return false;
-
-    const [ly, lm, ld] = leftParts;
-    const [ry, rm, rd] = rightParts;
-    return ly === rd && lm === rm && ld === ry;
-  };
-
-  const applyBookedSlots = (bookedSlots: string[], selectedDate: string) => {
-    const now = new Date();
-    const isToday = selectedDate === getLocalDateToken(now);
-
-    setSlots(
-      TIME_SLOTS.map((slot) => ({
-        slot,
-        isBooked: bookedSlots.includes(slot),
-        isPast: isToday ? (parseSlotDateTime(selectedDate, slot)?.getTime() ?? Number.MAX_SAFE_INTEGER) <= now.getTime() : false,
-        available:
-          !bookedSlots.includes(slot) &&
-          !(isToday ? (parseSlotDateTime(selectedDate, slot)?.getTime() ?? Number.MAX_SAFE_INTEGER) <= now.getTime() : false),
-      }))
-    );
-  };
-
-  const fetchBookedSlotsForDate = async (selectedDate: string): Promise<string[]> => {
-    return getBookedSlots(selectedDate);
-  };
-
-  useEffect(() => {
-    if (!date) return;
-
-    let isMounted = true;
-
-    const loadBookedSlots = async () => {
-      try {
-        const bookedSlots = await fetchBookedSlotsForDate(date);
-
-        if (!isMounted) return;
-
-        availabilityErrorShownRef.current = false;
-        applyBookedSlots(bookedSlots, date);
-
-        if (bookedSlots.includes(timeSlot)) {
-          setTimeSlot("");
-        }
-      } catch {
-        if (!isMounted) return;
-
-        
-        setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false, isBooked: false, isPast: false })));
-        if (!availabilityErrorShownRef.current) {
-          toast.error("Could not load slot availability. Please refresh and try again.");
-          availabilityErrorShownRef.current = true;
-        }
+  const isStepValid = useCallback(
+    (current: number) => {
+      switch (current) {
+        case 1:
+          return Boolean(state.vehicleType);
+        case 2:
+          return state.services.length > 0;
+        case 3:
+          return state.services.includes("Dent Removal") ? state.dents >= 1 : true;
+        case 4:
+          return true;
+        case 5:
+          return Boolean(state.date);
+        case 6:
+          return Boolean(state.timeSlot);
+        case 7:
+          return Boolean(state.customer.name && state.customer.phone && state.customer.email);
+        case 8:
+          return true;
+        default:
+          return true;
       }
-    };
+    },
+    [state]
+  );
 
-    setTimeSlot("");
-    loadBookedSlots();
+  const loadStaticData = useCallback(async () => {
+    const [svcRes, vehicleRes, addonRes] = await Promise.all([
+      apiCall("getServices"),
+      apiCall("getVehicleTypes"),
+      apiCall("getAddons"),
+    ]);
 
-    const pollId = window.setInterval(() => {
-      void loadBookedSlots();
-    }, 5000);
-
-    const handleFocus = () => {
-      void loadBookedSlots();
-    };
-
-    window.addEventListener("focus", handleFocus);
-
-    return () => {
-      isMounted = false;
-      window.clearInterval(pollId);
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, [date]);
-
-  const today = getLocalDateToken(new Date());
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name || !email || !phone || !carModel || serviceTypes.length === 0 || !date || !timeSlot) {
-      toast.error("Please fill in all fields");
+    if (!svcRes.success || !vehicleRes.success || !addonRes.success) {
+      toast.error("Unable to load booking data. Please refresh.");
       return;
     }
 
-    try {
-      const latestBookedSlots = await fetchBookedSlotsForDate(date);
-      if (latestBookedSlots.includes(timeSlot)) {
-        toast.error("This time slot is already booked. Please choose another slot.");
-        applyBookedSlots(latestBookedSlots, date);
-        setTimeSlot("");
+    setServices((svcRes.data as Service[]) || []);
+    setVehicleTypes((vehicleRes.data as VehicleType[]) || []);
+    setAddons((addonRes.data as Addon[]) || []);
+  }, []);
+
+  useEffect(() => {
+    void loadStaticData();
+  }, [loadStaticData]);
+
+  const loadSlots = useCallback(async () => {
+    if (!state.date) return;
+
+    setLoadingSlots(true);
+    setState((prev) => ({ ...prev, timeSlot: null }));
+
+    const result = await apiCall("getSlots", { date: state.date });
+    setLoadingSlots(false);
+
+    if (!result.success) {
+      toast.error("Failed to load time slots");
+      setSlots([]);
+      return;
+    }
+
+    setSlots((result.data as Slot[]) || []);
+  }, [state.date]);
+
+  useEffect(() => {
+    if (step === 6 && state.date) {
+      void loadSlots();
+    }
+  }, [step, state.date, loadSlots]);
+
+  const loadPrice = useCallback(async () => {
+    if (state.services.length === 0 || !state.vehicleType) return;
+
+    setLoadingPrice(true);
+    const result = await apiCall("calculatePrice", {
+      service: state.services.join(","),
+      vehicleType: state.vehicleType,
+      dents: state.dents,
+      addons: state.addons.join(","),
+    });
+    setLoadingPrice(false);
+
+    if (!result.success) {
+      toast.error("Failed to calculate price");
+      setPrice(null);
+      return;
+    }
+
+    const nextPrice = (result.data as PriceSummary) || null;
+    setPrice(nextPrice);
+    setState((prev) => ({ ...prev, calculatedPrice: nextPrice?.totalPrice || 0 }));
+  }, [state.addons, state.dents, state.services, state.vehicleType]);
+
+  useEffect(() => {
+    if (step === 8) {
+      void loadPrice();
+    }
+  }, [step, loadPrice]);
+
+  const goNext = async () => {
+    if (!isStepValid(step)) {
+      toast.error("Please complete this step before continuing.");
+      return;
+    }
+
+    if (step === 8) {
+      setSubmitting(true);
+      setConfirmError(null);
+
+      const payload = {
+        service: state.services.join(", "),
+        vehicleType: state.vehicleType || "",
+        dents: state.dents,
+        addons: state.addons.join(","),
+        date: state.date || "",
+        timeSlot: state.timeSlot || "",
+        customerName: state.customer.name,
+        name: state.customer.name,
+        phone: state.customer.phone,
+        email: state.customer.email,
+        customerEmail: state.customer.email,
+        sendEmail: "true",
+        notifyCustomer: "true",
+        confirmationEmail: "true",
+        carModel: state.customer.carModel,
+        notes: state.customer.notes,
+        price: state.calculatedPrice,
+      };
+
+      const result = await apiCall("createBooking", payload);
+      setSubmitting(false);
+
+      if (!result.success) {
+        const message = String(result.error || "Something went wrong while booking.");
+        setConfirmError(message);
+        toast.error(message);
+        setStep(9);
         return;
       }
 
-      const slotDate = parseSlotDateTime(date, timeSlot);
-      if (date === today && slotDate && slotDate.getTime() <= Date.now()) {
-        toast.error("Selected time slot has already passed. Please choose a future time.");
-        applyBookedSlots(latestBookedSlots, date);
-        setTimeSlot("");
-        return;
+      const confirmationData = result.data as Confirmation;
+      setConfirmation(confirmationData);
+      toast.success("Booking confirmed successfully");
+
+      if (confirmationData.emailSent === false) {
+        toast.warning("Booking created, but confirmation email was not sent. Please contact support.");
       }
 
-      const response = await fetch(SCRIPT_URL, {
-        method: "POST",
-      
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          action: "book",
-          name,
-          email,
-          phone,
-          car_model: carModel,
-          service: serviceTypes.join(", "),
-          date,
-          time: timeSlot,
-        }),
+      setStep(9);
+      return;
+    }
+
+    const next = getNextStep(step);
+    if (next <= TOTAL_STEPS) setStep(next);
+  };
+
+  const goBack = () => {
+    const prev = getPrevStep(step);
+    if (prev >= 1) setStep(prev);
+  };
+
+  const handleWizardKeyDownCapture = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (step === 2 && e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
+  const resetWizard = () => {
+    setState(INITIAL_STATE);
+    setStep(1);
+    setSlots([]);
+    setPrice(null);
+    setConfirmation(null);
+    setConfirmError(null);
+  };
+
+  const summaryRows = useMemo(() => {
+    if (!price) return [];
+
+    const rows: Array<{ label: string; value: string; isTotal?: boolean }> = [
+      {
+        label: `${state.services.join(", ")} (base)`,
+        value: `Rs ${price.basePrice.toLocaleString("en-IN")}`,
+      },
+      {
+        label: `${state.vehicleType} (x${price.multiplier})`,
+        value: `Rs ${price.serviceTotal.toLocaleString("en-IN")}`,
+      },
+    ];
+
+    if (price.dentCount > 0) {
+      rows.push({
+        label: `Dent Removal (${price.dentCount} x Rs ${price.dentPrice.toLocaleString("en-IN")})`,
+        value: `Rs ${price.dentTotal.toLocaleString("en-IN")}`,
       });
-
-      const raw = await response.text();
-      let result: { status?: string; message?: string } = {};
-
-      try {
-        result = JSON.parse(raw);
-      } catch {
-        if (raw.toLowerCase().includes("google hasn't verified this app")) {
-          toast.error("Please authorize the Apps Script deployment once, then try again.");
-          return;
-        }
-        throw new Error("Invalid API response");
-      }
-
-      if (!response.ok) {
-        throw new Error(result.message || "Booking failed");
-      }
-
-      if (result.status === "error" && result.message === "Slot already booked") {
-        toast.error("This time slot is already booked. Please choose another slot.");
-
-        const bookedSlots = await fetchBookedSlotsForDate(date);
-        applyBookedSlots(bookedSlots, date);
-        setTimeSlot("");
-        return;
-      }
-
-      if (result.status && result.status !== "success") {
-        toast.error(result.message || "Booking failed");
-        return;
-      }
-
-      // Immediately lock this slot in UI for the currently selected date.
-      applyBookedSlots([...latestBookedSlots, timeSlot], date);
-      setTimeSlot("");
-      setSubmitted(true);
-      toast.success("Booking confirmed. Check your email for confirmation.");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to complete booking. Please try again.";
-      toast.error(message);
     }
-  };
 
-  const handleBookAnother = async () => {
-    setSubmitted(false);
-
-    if (!date) return;
-
-    try {
-      const bookedSlots = await fetchBookedSlotsForDate(date);
-      applyBookedSlots(bookedSlots, date);
-    } catch {
-      setSlots(TIME_SLOTS.map((slot) => ({ slot, available: false, isBooked: false, isPast: false })));
-      toast.error("Could not refresh slot availability. Please refresh and try again.");
+    if (price.addonTotal > 0) {
+      rows.push({ label: "Add-ons", value: `Rs ${price.addonTotal.toLocaleString("en-IN")}` });
     }
-  };
+
+    rows.push({
+      label: "Estimated Total",
+      value: `Rs ${price.totalPrice.toLocaleString("en-IN")}`,
+      isTotal: true,
+    });
+
+    return rows;
+  }, [price, state.services, state.vehicleType]);
 
   const handleCancelBooking = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,10 +666,8 @@ export default function BookAppointment() {
 
     try {
       setIsCancelling(true);
-
       let deleted = false;
 
-      // Preferred path: find exact booking and delete by id (same API owner uses).
       try {
         const allBookings = await getBookings();
         const target = allBookings.find(
@@ -282,7 +683,7 @@ export default function BookAppointment() {
           deleted = true;
         }
       } catch {
-        // Fall back to details-based delete for older scripts.
+        // fallback below
       }
 
       if (!deleted) {
@@ -295,11 +696,6 @@ export default function BookAppointment() {
 
       toast.success("Booking cancelled successfully");
       setCancelTimeSlot("");
-
-      if (date === cancelDate) {
-        const bookedSlots = await fetchBookedSlotsForDate(date);
-        applyBookedSlots(bookedSlots, date);
-      }
     } catch (error) {
       toast.error(getFriendlyError(error, "Unable to cancel booking"));
     } finally {
@@ -307,223 +703,483 @@ export default function BookAppointment() {
     }
   };
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-32 pb-24 container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <CheckCircle className="h-20 w-20 text-primary mx-auto mb-6" />
-            <h1 className="font-heading text-4xl font-bold mb-4">Booking Confirmed!</h1>
-            <p className="text-muted-foreground text-lg mb-8">
-              Thank you for choosing Xtreme Car Care. We'll see you on {date} at {timeSlot}.
-            </p>
-            <Button variant="gold" size="lg" onClick={handleBookAnother}>
-              Book Another
-            </Button>
-          </motion.div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+
       <div className="pt-28 pb-24">
-        <div className="container mx-auto px-4 max-w-2xl">
+        <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-10"
           >
-            <p className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-3">Appointment</p>
+            <p className="text-primary font-heading text-xs tracking-[0.3em] uppercase mb-3">Appointment Wizard</p>
             <h1 className="font-heading text-3xl md:text-5xl font-bold">
               Book Your <span className="text-gradient-gold">Service</span>
             </h1>
+            <p className="text-muted-foreground mt-3 text-sm md:text-base">
+              Step {step} of {TOTAL_STEPS}: {STEP_TITLES[step - 1]}
+            </p>
           </motion.div>
 
-          <motion.form
-            onSubmit={handleSubmit}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="glass rounded-2xl p-8 space-y-6"
-          >
-            {/* Name */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
-                <User className="h-4 w-4 text-primary" /> Full Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your name"
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                required
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
-                <Phone className="h-4 w-4 text-primary" /> Phone Number
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 XXXXX XXXXX"
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
-                <Mail className="h-4 w-4 text-primary" /> Email Address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="yourname@example.com"
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                required
-              />
-            </div>
-
-            {/* Car Model */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
-                <Car className="h-4 w-4 text-primary" /> Car Model
-              </label>
-              <input
-                type="text"
-                value={carModel}
-                onChange={(e) => setCarModel(e.target.value)}
-                placeholder="e.g., Hyundai Creta, BMW 3 Series"
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                required
-              />
-            </div>
-
-            {/* Service Type */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
-                <Wrench className="h-4 w-4 text-primary" /> Service Type
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {SERVICES.map((service) => {
-                  const checked = serviceTypes.includes(service);
+          <div className="glass rounded-2xl p-6 md:p-8 mb-8" onKeyDownCapture={handleWizardKeyDownCapture}>
+            <div className="mb-6">
+              <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-gold"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.4 }}
+                />
+              </div>
+              <div className="grid grid-cols-9 gap-2 mt-4">
+                {Array.from({ length: TOTAL_STEPS }).map((_, idx) => {
+                  const point = idx + 1;
+                  const done = point < step;
+                  const active = point === step;
                   return (
-                    <label
-                      key={service}
-                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors ${
-                        checked
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-secondary hover:border-primary"
+                    <div
+                      key={point}
+                      className={`h-8 rounded-full text-xs flex items-center justify-center font-heading ${
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : done
+                          ? "bg-primary/25 text-primary"
+                          : "bg-secondary text-muted-foreground"
                       }`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={(e) => {
-                          const next = e.target.checked
-                            ? [...serviceTypes, service]
-                            : serviceTypes.filter((value) => value !== service);
-                          setServiceTypes(next);
-                        }}
-                        className="h-4 w-4 accent-primary"
-                      />
-                      <span className="text-sm">{service}</span>
-                    </label>
+                      {done ? <Check className="h-3.5 w-3.5" /> : point}
+                    </div>
                   );
                 })}
               </div>
-              {serviceTypes.length === 0 && (
-                <p className="text-xs text-muted-foreground mt-2">Select one or more services.</p>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-5"
+              >
+                {step === 1 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <Car className="h-4 w-4 text-primary" /> Select Vehicle Type
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {vehicleTypes.map((vt) => {
+                        const Icon = vehicleIcons[vt.vehicle_type] || Car;
+                        return (
+                          <OptionCard
+                            key={vt.vehicle_type_id}
+                            selected={state.vehicleType === vt.vehicle_type}
+                            onClick={() => setState((prev) => ({ ...prev, vehicleType: vt.vehicle_type }))}
+                            title={vt.vehicle_type}
+                            subtitle={`Price factor x${vt.price_multiplier}`}
+                            Icon={Icon}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {step === 2 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-primary" /> Select Service(s)
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {services.map((service) => {
+                        const Icon = serviceIcons[service.service_name] || Wrench;
+                        const isSelected = state.services.includes(service.service_name);
+                        return (
+                          <OptionCard
+                            key={service.service_id}
+                            selected={isSelected}
+                            onClick={() => {
+                              setState((prev) => {
+                                const hasService = prev.services.includes(service.service_name);
+                                const nextServices = hasService
+                                  ? prev.services.filter((value) => value !== service.service_name)
+                                  : [...prev.services, service.service_name];
+
+                                return {
+                                  ...prev,
+                                  services: nextServices,
+                                  dents: nextServices.includes("Dent Removal") ? Math.max(1, prev.dents) : 0,
+                                };
+                              });
+                            }}
+                            title={service.service_name}
+                            subtitle={`From Rs ${service.base_price.toLocaleString("en-IN")}`}
+                            Icon={Icon}
+                          />
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">You can select one or multiple services.</p>
+                  </div>
+                )}
+
+                {step === 3 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <Wrench className="h-4 w-4 text-primary" /> Number of Dents
+                    </p>
+                    {state.services.includes("Dent Removal") ? (
+                      <div className="bg-secondary/60 rounded-xl border border-border p-5">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-heading font-semibold">Dent count</p>
+                            <p className="text-sm text-muted-foreground">Rs {DENT_PRICE.toLocaleString("en-IN")} per dent</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              className="h-10 w-10 rounded-lg border border-border bg-secondary flex items-center justify-center"
+                              onClick={() => setState((prev) => ({ ...prev, dents: Math.max(1, prev.dents - 1) }))}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </button>
+                            <input
+                              type="number"
+                              min={1}
+                              max={50}
+                              value={Math.max(1, state.dents)}
+                              onChange={(e) => {
+                                const value = Math.max(1, Math.min(50, parseInt(e.target.value || "1", 10) || 1));
+                                setState((prev) => ({ ...prev, dents: value }));
+                              }}
+                              className="w-16 text-center rounded-lg border border-border bg-secondary px-2 py-2"
+                            />
+                            <button
+                              type="button"
+                              className="h-10 w-10 rounded-lg border border-border bg-secondary flex items-center justify-center"
+                              onClick={() => setState((prev) => ({ ...prev, dents: Math.min(50, Math.max(1, prev.dents) + 1) }))}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-secondary/60 rounded-xl border border-border p-5">
+                        <p className="font-heading font-semibold">No dent input needed</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          You did not select Dent Removal. This step is shown for flow consistency, and you can continue.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {step === 4 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" /> Optional Add-ons
+                    </p>
+                    <div className="space-y-2">
+                      {addons.map((addon) => {
+                        const selected = state.addons.includes(addon.addon_name);
+                        const Icon = addonIcons[addon.addon_name] || Circle;
+                        return (
+                          <button
+                            key={addon.addon_id}
+                            type="button"
+                            className={`w-full rounded-xl border px-4 py-3 flex items-center justify-between transition-colors ${
+                              selected ? "border-primary bg-primary/10" : "border-border bg-secondary/60 hover:border-primary/40"
+                            }`}
+                            onClick={() => {
+                              setState((prev) => {
+                                const has = prev.addons.includes(addon.addon_name);
+                                return {
+                                  ...prev,
+                                  addons: has
+                                    ? prev.addons.filter((name) => name !== addon.addon_name)
+                                    : [...prev.addons, addon.addon_name],
+                                };
+                              });
+                            }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Icon className={`h-4 w-4 ${selected ? "text-primary" : "text-muted-foreground"}`} />
+                              <span className="text-sm font-medium">{addon.addon_name}</span>
+                            </div>
+                            <span className="text-sm text-muted-foreground">+Rs {addon.price.toLocaleString("en-IN")}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {state.addons.length === 0 && <p className="text-xs text-muted-foreground mt-2">No add-ons selected.</p>}
+                  </div>
+                )}
+
+                {step === 5 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <CalendarDays className="h-4 w-4 text-primary" /> Select Date
+                    </p>
+                    <input
+                      type="date"
+                      value={state.date || ""}
+                      min={getTodayStr()}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setState((prev) => ({ ...prev, date: value || null, timeSlot: null }));
+                      }}
+                      className="w-full rounded-xl border border-border bg-secondary px-4 py-3"
+                    />
+                  </div>
+                )}
+
+                {step === 6 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-primary" /> Select Time Slot
+                    </p>
+                    {loadingSlots ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" /> Loading slots...
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {slots.map((slot) => {
+                          const selected = state.timeSlot === slot.time;
+                          return (
+                            <button
+                              type="button"
+                              key={slot.time}
+                              disabled={!slot.available}
+                              onClick={() => setState((prev) => ({ ...prev, timeSlot: slot.time }))}
+                              className={`rounded-xl border px-3 py-3 text-sm font-semibold transition-colors ${
+                                selected
+                                  ? "border-primary bg-primary text-primary-foreground"
+                                  : slot.available
+                                  ? "border-border bg-secondary/60 hover:border-primary/40"
+                                  : "border-border/40 bg-muted text-muted-foreground cursor-not-allowed"
+                              }`}
+                            >
+                              {slot.time}
+                            </button>
+                          );
+                        })}
+                        {slots.length === 0 && <p className="text-sm text-muted-foreground">No slots found for this date.</p>}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {step === 7 && (
+                  <div className="space-y-4">
+                    <p className="font-heading font-semibold flex items-center gap-2">
+                      <User className="h-4 w-4 text-primary" /> Customer Details
+                    </p>
+                    <div>
+                      <label className="text-sm mb-1.5 block">Full Name</label>
+                      <input
+                        type="text"
+                        value={state.customer.name}
+                        onChange={(e) => setState((prev) => ({ ...prev, customer: { ...prev.customer, name: e.target.value } }))}
+                        className="w-full rounded-xl border border-border bg-secondary px-4 py-3"
+                        placeholder="Enter full name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm mb-1.5 block flex items-center gap-1.5">
+                        <Phone className="h-3.5 w-3.5 text-primary" /> Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        value={state.customer.phone}
+                        onChange={(e) => setState((prev) => ({ ...prev, customer: { ...prev.customer, phone: e.target.value } }))}
+                        className="w-full rounded-xl border border-border bg-secondary px-4 py-3"
+                        placeholder="+91 XXXXX XXXXX"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm mb-1.5 block flex items-center gap-1.5">
+                        <Mail className="h-3.5 w-3.5 text-primary" /> Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={state.customer.email}
+                        onChange={(e) => setState((prev) => ({ ...prev, customer: { ...prev.customer, email: e.target.value } }))}
+                        className="w-full rounded-xl border border-border bg-secondary px-4 py-3"
+                        placeholder="you@example.com"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm mb-1.5 block flex items-center gap-1.5">
+                        <Car className="h-3.5 w-3.5 text-primary" /> Car Model
+                      </label>
+                      <input
+                        type="text"
+                        value={state.customer.carModel}
+                        onChange={(e) => setState((prev) => ({ ...prev, customer: { ...prev.customer, carModel: e.target.value } }))}
+                        className="w-full rounded-xl border border-border bg-secondary px-4 py-3"
+                        placeholder="e.g., Hyundai Creta"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm mb-1.5 block">Notes (optional)</label>
+                      <textarea
+                        value={state.customer.notes}
+                        onChange={(e) => setState((prev) => ({ ...prev, customer: { ...prev.customer, notes: e.target.value } }))}
+                        className="w-full rounded-xl border border-border bg-secondary px-4 py-3 min-h-[110px]"
+                        placeholder="Any special request"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {step === 8 && (
+                  <div>
+                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-primary" /> Review & Confirm
+                    </p>
+
+                    {loadingPrice ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" /> Calculating estimate...
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="rounded-xl border border-border bg-secondary/60 p-4 space-y-2">
+                          {summaryRows.map((row) => (
+                            <div key={row.label} className={`flex items-center justify-between text-sm ${row.isTotal ? "font-heading font-bold text-base pt-2 border-t border-border" : ""}`}>
+                              <span className="text-muted-foreground">{row.label}</span>
+                              <span>{row.value}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="rounded-xl border border-border bg-secondary/60 p-4 space-y-2 text-sm">
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Services</span>
+                            <span>{state.services.join(", ")}</span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Vehicle</span>
+                            <span>{state.vehicleType}</span>
+                          </div>
+                          {state.dents > 0 && (
+                            <div className="flex justify-between gap-4">
+                              <span className="text-muted-foreground">Dents</span>
+                              <span>{state.dents}</span>
+                            </div>
+                          )}
+                          {state.addons.length > 0 && (
+                            <div className="flex justify-between gap-4">
+                              <span className="text-muted-foreground">Add-ons</span>
+                              <span>{state.addons.join(", ")}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Date</span>
+                            <span>{formatDisplayDate(state.date)}</span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Time</span>
+                            <span>{state.timeSlot}</span>
+                          </div>
+                          <div className="flex justify-between gap-4">
+                            <span className="text-muted-foreground">Customer</span>
+                            <span>{state.customer.name}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {step === 9 && (
+                  <div className="text-center py-6">
+                    {confirmation && !confirmError ? (
+                      <>
+                        <CheckCircle2 className="h-14 w-14 text-primary mx-auto mb-4" />
+                        <h2 className="font-heading text-3xl font-bold mb-2">Booking Confirmed</h2>
+                        <p className="text-muted-foreground">{confirmation.message || "Your appointment has been scheduled."}</p>
+                        {confirmation.emailSent === true && (
+                          <p className="text-sm text-primary mt-2">Confirmation email has been sent to {state.customer.email}.</p>
+                        )}
+                        {confirmation.emailSent === false && (
+                          <p className="text-sm text-destructive mt-2">
+                            Booking is confirmed, but email could not be sent. Please verify your email address.
+                          </p>
+                        )}
+                        <div className="my-6 inline-block px-5 py-2 rounded-lg border border-primary/40 bg-primary/10 font-heading font-semibold">
+                          {confirmation.bookingId}
+                        </div>
+                        <div className="rounded-xl border border-border bg-secondary/60 p-4 text-left max-w-xl mx-auto space-y-2 text-sm">
+                          <div className="flex justify-between"><span className="text-muted-foreground">Service</span><span>{confirmation.service}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Vehicle</span><span>{confirmation.vehicleType}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span>{formatDisplayDate(confirmation.date)}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Time</span><span>{confirmation.timeSlot}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Total</span><span>Rs {Number(confirmation.price || 0).toLocaleString("en-IN")}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="text-primary">{confirmation.status}</span></div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h2 className="font-heading text-3xl font-bold mb-2">Booking Failed</h2>
+                        <p className="text-destructive">{confirmError || "Unable to complete booking."}</p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="mt-8 flex items-center justify-between gap-3">
+              {step < 9 ? (
+                <>
+                  <Button type="button" variant="outline" onClick={goBack} disabled={step === 1}>
+                    <ChevronLeft className="h-4 w-4 mr-1" /> Back
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={step === 8 ? "gold" : "default"}
+                    onClick={() => void goNext()}
+                    disabled={!isStepValid(step) || submitting || loadingPrice}
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...
+                      </>
+                    ) : step === 8 ? (
+                      "Confirm Booking"
+                    ) : (
+                      <>
+                        Next <ChevronRight className="h-4 w-4 ml-1" />
+                      </>
+                    )}
+                  </Button>
+                </>
+              ) : (
+                <div className="w-full flex justify-center">
+                  <Button type="button" variant="gold" onClick={resetWizard}>
+                    Book Another Service
+                  </Button>
+                </div>
               )}
             </div>
-
-            {/* Date */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-2">
-                <CalendarDays className="h-4 w-4 text-primary" /> Date
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                min={today}
-                className="w-full rounded-lg border border-border bg-secondary px-4 py-3 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
-                required
-              />
-            </div>
-
-            {/* Time Slots */}
-            {date && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                transition={{ duration: 0.3 }}
-              >
-                <label className="flex items-center gap-2 text-sm font-heading font-semibold mb-3">
-                  <Clock className="h-4 w-4 text-primary" /> Available Time Slots
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {slots.map(({ slot, available, isBooked }) => (
-                    <button
-                      key={slot}
-                      type="button"
-                      disabled={!available}
-                      onClick={() => setTimeSlot(slot)}
-                      className={`rounded-lg px-4 py-3 text-sm font-heading font-semibold transition-all duration-200 ${
-                        timeSlot === slot
-                          ? "bg-primary text-primary-foreground glow-gold"
-                          : available
-                          ? "bg-secondary text-foreground hover:border-primary border border-border"
-                          : isBooked
-                          ? "bg-destructive/20 text-destructive line-through cursor-not-allowed border border-destructive/30"
-                          : "bg-muted text-muted-foreground cursor-not-allowed border border-border/70"
-                      }`}
-                    >
-                      {slot}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-secondary border border-border" /> Available
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-destructive/30" /> Booked
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-muted border border-border/70" /> Past Time
-                  </span>
-                </div>
-              </motion.div>
-            )}
-
-            <Button type="submit" variant="gold" size="lg" className="w-full shine-effect">
-              Confirm Booking
-            </Button>
-          </motion.form>
+          </div>
 
           <motion.form
             onSubmit={handleCancelBooking}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="glass rounded-2xl p-8 space-y-5 mt-8"
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="glass rounded-2xl p-6 md:p-8 space-y-5"
           >
             <div>
               <p className="text-primary font-heading text-xs tracking-[0.25em] uppercase mb-2">Manage Booking</p>
@@ -580,12 +1236,20 @@ export default function BookAppointment() {
             </div>
 
             <Button type="submit" variant="destructive" size="lg" className="w-full" disabled={isCancelling}>
-              <Trash2 className="h-4 w-4 mr-2" />
-              {isCancelling ? "Cancelling..." : "Delete Booking Slot"}
+              {isCancelling ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Cancelling...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4 mr-2" /> Delete Booking Slot
+                </>
+              )}
             </Button>
           </motion.form>
         </div>
       </div>
+
       <Footer />
       <WhatsAppButton />
     </div>

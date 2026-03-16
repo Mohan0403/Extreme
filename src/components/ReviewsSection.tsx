@@ -90,11 +90,7 @@ export default function ReviewsSection() {
                   <p className="font-heading font-semibold text-sm">{review.name}</p>
                   <p className="text-primary text-xs">{review.service}</p>
                 </div>
-                <img
-                  src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_24dp.png"
-                  alt="Google"
-                  className="h-5 opacity-60"
-                />
+                {/* Google logo removed as requested */}
               </div>
             </motion.div>
           ))}
