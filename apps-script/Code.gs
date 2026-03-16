@@ -461,7 +461,10 @@ function handleDeleteByDetails(body) {
   const date = normalizeDate(clean(body.date));
   const time = normalizeTime(clean(body.time || body.timeSlot));
 
+  Logger.log("Delete request: phone=%s, date=%s, time=%s", phone, date, time);
+
   if (!phone || !date || !time) {
+    Logger.log("Missing phone, date, or time");
     return fail("Missing phone, date or time");
   }
 
@@ -469,7 +472,10 @@ function handleDeleteByDetails(body) {
   ensureHeaderRow(sh);
 
   const lastRow = sh.getLastRow();
-  if (lastRow < 2) return fail("No bookings found");
+  if (lastRow < 2) {
+    Logger.log("No bookings found in sheet");
+    return fail("No bookings found");
+  }
 
   const rows = sh.getRange(2, 1, lastRow - 1, 9).getDisplayValues();
 
@@ -477,13 +483,15 @@ function handleDeleteByDetails(body) {
     const rowPhone = normalizePhone(rows[i][2]);
     const rowDate = normalizeDate(rows[i][5]);
     const rowTime = normalizeTime(rows[i][6]);
-
+    Logger.log("Comparing row %d: rowPhone=%s, rowDate=%s, rowTime=%s", i+2, rowPhone, rowDate, rowTime);
     if (rowPhone === phone && rowDate === date && rowTime === time) {
+      Logger.log("Match found at row %d. Deleting row.", i+2);
       sh.deleteRow(i + 2);
       return ok(null, "Booking cancelled");
     }
   }
 
+  Logger.log("No matching booking found for deletion");
   return fail("Booking not found");
 }
 

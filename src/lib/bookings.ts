@@ -16,14 +16,12 @@ export const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycby4kXssusJyisJUQVSELXJCUlaqghgEQDztjMlGu4zePhfobdcUwXhh6sYzudN8Kdgp/exec";
 
 export const TIME_SLOTS = [
-  "9:00 AM",
-  "10:00 AM",
-  "11:00 AM",
-  "12:00 PM",
-  "2:00 PM",
-  "3:00 PM",
-  "4:00 PM",
-  "5:00 PM",
+  "09:00",
+  "10:30",
+  "12:00",
+  "14:00",
+  "16:00",
+  "18:00",
 ];
 
 export const SERVICES = [

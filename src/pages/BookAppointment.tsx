@@ -668,32 +668,11 @@ export default function BookAppointment() {
       setIsCancelling(true);
       let deleted = false;
 
-      try {
-        const allBookings = await getBookings();
-        const target = allBookings.find(
-          (booking) =>
-            phonesMatch(booking.phone, cancelPhone) &&
-            dateMatches(booking.date, cancelDate) &&
-            normalizeTime(booking.timeSlot) === normalizeTime(cancelTimeSlot) &&
-            booking.status === "booked"
-        );
-
-        if (target?.id) {
-          await deleteBooking(target.id);
-          deleted = true;
-        }
-      } catch {
-        // fallback below
-      }
-
-      if (!deleted) {
-        await deleteBookingByDetails({
-          phone: cancelPhone,
-          date: cancelDate,
-          timeSlot: cancelTimeSlot,
-        });
-      }
-
+      await deleteBookingByDetails({
+        phone: cancelPhone,
+        date: cancelDate,
+        timeSlot: cancelTimeSlot,
+      });
       toast.success("Booking cancelled successfully");
       setCancelTimeSlot("");
     } catch (error) {
