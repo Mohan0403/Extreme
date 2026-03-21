@@ -42,7 +42,7 @@ import {
 import { toast } from "sonner";
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycby4kXssusJyisJUQVSELXJCUlaqghgEQDztjMlGu4zePhfobdcUwXhh6sYzudN8Kdgp/exec";
+  "https://script.google.com/macros/s/AKfycbyFPeQt10pbrzrVTW9hGOsXsAMKsIjtOXhHN6lQ1iVDWuWy_fO_eeEnQ7IHhL2CY4VS/exec";
 
 const DENT_PRICE = 500;
 const TOTAL_STEPS = 9;
@@ -144,11 +144,15 @@ const STEP_TITLES = [
 
 const MOCK_DATA = {
   services: [
-    { service_id: "SVC001", service_name: "Paint Protection Film", base_price: 25000 },
-    { service_id: "SVC002", service_name: "Ceramic Coating", base_price: 15000 },
-    { service_id: "SVC003", service_name: "Interior Detailing", base_price: 3000 },
-    { service_id: "SVC004", service_name: "Exterior Detailing", base_price: 2500 },
-    { service_id: "SVC005", service_name: "Dent Removal", base_price: 1500 },
+    { service_id: "SVC010", service_name: "Business Class Customisation", base_price: 50000 },
+    { service_id: "SVC011", service_name: "Full Car Customisation", base_price: 40000 },
+    { service_id: "SVC001", service_name: "Paint Protection Film (PPF)", base_price: 25000 },
+    { service_id: "SVC002", service_name: "Coatings", base_price: 15000 },
+    { service_id: "SVC012", service_name: "Body Kits", base_price: 35000 },
+    { service_id: "SVC013", service_name: "Premium Infotainment Systems", base_price: 30000 },
+    { service_id: "SVC005", service_name: "Accessories", base_price: 1500 },
+    { service_id: "SVC014", service_name: "Gold Package", base_price: 60000 },
+    { service_id: "SVC015", service_name: "Automatic Car Wash", base_price: 2000 },
   ] as Service[],
   vehicleTypes: [
     { vehicle_type_id: "VT001", vehicle_type: "Sedan", price_multiplier: 1.0 },
@@ -622,39 +626,7 @@ export default function BookAppointment() {
     setConfirmError(null);
   };
 
-  const summaryRows = useMemo(() => {
-    if (!price) return [];
-
-    const rows: Array<{ label: string; value: string; isTotal?: boolean }> = [
-      {
-        label: `${state.services.join(", ")} (base)`,
-        value: `Rs ${price.basePrice.toLocaleString("en-IN")}`,
-      },
-      {
-        label: `${state.vehicleType} (x${price.multiplier})`,
-        value: `Rs ${price.serviceTotal.toLocaleString("en-IN")}`,
-      },
-    ];
-
-    if (price.dentCount > 0) {
-      rows.push({
-        label: `Dent Removal (${price.dentCount} x Rs ${price.dentPrice.toLocaleString("en-IN")})`,
-        value: `Rs ${price.dentTotal.toLocaleString("en-IN")}`,
-      });
-    }
-
-    if (price.addonTotal > 0) {
-      rows.push({ label: "Add-ons", value: `Rs ${price.addonTotal.toLocaleString("en-IN")}` });
-    }
-
-    rows.push({
-      label: "Estimated Total",
-      value: `Rs ${price.totalPrice.toLocaleString("en-IN")}`,
-      isTotal: true,
-    });
-
-    return rows;
-  }, [price, state.services, state.vehicleType]);
+  // summaryRows removed (no price display)
 
   const handleCancelBooking = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -796,7 +768,6 @@ export default function BookAppointment() {
                               });
                             }}
                             title={service.service_name}
-                            subtitle={`From Rs ${service.base_price.toLocaleString("en-IN")}`}
                             Icon={Icon}
                           />
                         );
@@ -816,7 +787,6 @@ export default function BookAppointment() {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-heading font-semibold">Dent count</p>
-                            <p className="text-sm text-muted-foreground">Rs {DENT_PRICE.toLocaleString("en-IN")} per dent</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <button
@@ -890,7 +860,7 @@ export default function BookAppointment() {
                               <Icon className={`h-4 w-4 ${selected ? "text-primary" : "text-muted-foreground"}`} />
                               <span className="text-sm font-medium">{addon.addon_name}</span>
                             </div>
-                            <span className="text-sm text-muted-foreground">+Rs {addon.price.toLocaleString("en-IN")}</span>
+                            {/* Price removed as per requirements */}
                           </button>
                         );
                       })}
@@ -1034,10 +1004,7 @@ export default function BookAppointment() {
                       <div className="space-y-3">
                         <div className="rounded-xl border border-border bg-secondary/60 p-4 space-y-2">
                           {summaryRows.map((row) => (
-                            <div key={row.label} className={`flex items-center justify-between text-sm ${row.isTotal ? "font-heading font-bold text-base pt-2 border-t border-border" : ""}`}>
-                              <span className="text-muted-foreground">{row.label}</span>
-                              <span>{row.value}</span>
-                            </div>
+                            {/* Price summary row removed as per requirements */}
                           ))}
                         </div>
 
@@ -1103,7 +1070,6 @@ export default function BookAppointment() {
                           <div className="flex justify-between"><span className="text-muted-foreground">Vehicle</span><span>{confirmation.vehicleType}</span></div>
                           <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span>{formatDisplayDate(confirmation.date)}</span></div>
                           <div className="flex justify-between"><span className="text-muted-foreground">Time</span><span>{confirmation.timeSlot}</span></div>
-                          <div className="flex justify-between"><span className="text-muted-foreground">Total</span><span>Rs {Number(confirmation.price || 0).toLocaleString("en-IN")}</span></div>
                           <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="text-primary">{confirmation.status}</span></div>
                         </div>
                       </>

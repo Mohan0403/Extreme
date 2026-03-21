@@ -6,11 +6,15 @@ const SENDER_EMAIL = "mohan04032007m@gmail.com";
 const DENT_PRICE = 500;
 
 const SERVICE_CATALOG = [
-  { service_id: "SVC001", service_name: "Paint Protection Film", base_price: 25000 },
-  { service_id: "SVC002", service_name: "Ceramic Coating", base_price: 15000 },
-  { service_id: "SVC003", service_name: "Interior Detailing", base_price: 3000 },
-  { service_id: "SVC004", service_name: "Exterior Detailing", base_price: 2500 },
-  { service_id: "SVC005", service_name: "Dent Removal", base_price: 1500 },
+  { service_id: "SVC010", service_name: "Business Class Customisation", base_price: 50000 },
+  { service_id: "SVC011", service_name: "Full Car Customisation", base_price: 40000 },
+  { service_id: "SVC001", service_name: "Paint Protection Film (PPF)", base_price: 25000 },
+  { service_id: "SVC002", service_name: "Coatings", base_price: 15000 },
+  { service_id: "SVC012", service_name: "Body Kits", base_price: 35000 },
+  { service_id: "SVC013", service_name: "Premium Infotainment Systems", base_price: 30000 },
+  { service_id: "SVC005", service_name: "Accessories", base_price: 1500 },
+  { service_id: "SVC014", service_name: "Gold Package", base_price: 60000 },
+  { service_id: "SVC015", service_name: "Automatic Car Wash", base_price: 2000 },
 ];
 
 const VEHICLE_TYPES = [

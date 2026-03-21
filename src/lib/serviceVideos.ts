@@ -4,31 +4,39 @@ export type ServiceVideoConfig = {
 };
 
 export const serviceVideos: Record<string, ServiceVideoConfig> = {
-  "Interior Deep Cleaning": {
-    videoSrc: "/videos/services/interior-deep-cleaning.mp4",
+  "Business Class Customisation": {
+    videoSrc: "",
+    videoEmbedUrl: "",
+  },
+  "Full Car Customisation": {
+    videoSrc: "",
+    videoEmbedUrl: "",
+  },
+  "Paint Protection Film (PPF)": {
+    videoSrc: "/videos/services/paint-polishing-film.mp4",
     videoEmbedUrl: "",
   },
   "Ceramic Coating": {
     videoSrc: "/videos/services/ceramic-coating.mp4",
     videoEmbedUrl: "",
   },
-  "Paint Protection Film": {
-    videoSrc: "/videos/services/paint-polishing-film.mp4",
+  "Body Kits": {
+    videoSrc: "",
     videoEmbedUrl: "",
   },
-  "Car Polishing & Detailing": {
-    videoSrc: "/videos/services/car-polishing-detailing.mp4",
+  "Premium Infotainment Systems": {
+    videoSrc: "",
     videoEmbedUrl: "",
   },
-  "360° Camera Installation": {
-    videoSrc: "/videos/services/360-camera-installation.mp4",
-    videoEmbedUrl: "",
-  },
-  "Car Accessories": {
+  "Accessories": {
     videoSrc: "/videos/services/car-accessories.mp4",
     videoEmbedUrl: "",
   },
-  "Premium Car Wash": {
+  "Gold Package": {
+    videoSrc: "",
+    videoEmbedUrl: "",
+  },
+  "Automatic Car Wash": {
     videoSrc: "/videos/services/premium-car-wash.mp4",
     videoEmbedUrl: "",
   },

@@ -5,22 +5,12 @@ import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const heroImages = [
-  "/images/hero-slider/hero1.jpeg",
-  "/images/hero-slider/hero2.jpeg",
-  "/images/hero-slider/hero3.png",
-  "/images/hero-slider/hero4.jpeg",
-  "/images/hero-slider/hero5.jpeg",
+  "/images/hero-slider/hero1.jpeg"
 ];
 
 export default function HeroSection() {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setCurrent((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => window.clearInterval(id);
-  }, []);
+  // Only use the first image, no cycling
+  const current = 0;
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">

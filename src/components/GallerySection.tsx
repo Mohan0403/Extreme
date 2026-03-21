@@ -9,13 +9,19 @@ type GalleryItem = {
   isPlaceholder?: boolean;
 };
 
+// Existing gallery items
+// The following items will be updated to match the new service order and names
+
 const galleryItems: GalleryItem[] = [
-  { src: "/images/services/interior-deep-cleaning.jpeg", alt: "Interior Deep Cleaning", label: "Interior Deep Cleaning" },
+  { src: "/images/services/business-class-customization.jpeg", alt: "Business Class Customisation", label: "Business Class Customisation" },
+  { src: "/images/services/full-car-customization.jpeg", alt: "Full Car Customisation", label: "Full Car Customisation" },
+  { src: "/images/services/ppf.jpeg", alt: "Paint Protection Film (PPF)", label: "Paint Protection Film (PPF)" },
   { src: "/images/services/ceramic-coating.jpeg", alt: "Ceramic Coating", label: "Ceramic Coating" },
-  { src: "/images/services/car-polishing-detailing.jpeg", alt: "Car Polishing & Detailing", label: "Car Polishing & Detailing" },
-  { src: "/images/services/camera-360-installation.jpeg", alt: "360° Camera Installation", label: "360° Camera Installation" },
-  { src: "/images/services/car-accessories.jpeg", alt: "Car Accessories", label: "Car Accessories" },
-  { src: "/images/services/premium-car-wash.jpeg", alt: "Premium Car Wash", label: "Premium Car Wash" },
+  { src: "/images/services/body-kit.jpeg", alt: "Body Kits", label: "Body Kits" },
+  { src: "/images/services/premium-infotainment-system.jpeg", alt: "Premium Infotainment Systems", label: "Premium Infotainment Systems" },
+  { src: "/images/services/car-accessories.jpeg", alt: "Accessories", label: "Accessories" },
+  { src: "/images/services/gold-package.jpeg", alt: "Gold Package", label: "Gold Package" },
+  { src: "/images/services/automatic car wash.jpeg", alt: "Automatic Car Wash", label: "Automatic Car Wash" },
   // ...existing code...
 ];
 

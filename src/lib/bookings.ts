@@ -25,14 +25,15 @@ export const TIME_SLOTS = [
 ];
 
 export const SERVICES = [
-  "Premium Car Wash",
-  "Interior Deep Cleaning",
-  "Ceramic Coating",
+  "Business Class Customisation",
+  "Full Car Customisation",
   "Paint Protection Film (PPF)",
-  "Car Polishing & Detailing",
-  "Android System Installation",
-  "360° Camera Installation",
-  "Car Accessories Installation",
+  "Coatings",
+  "Body Kits",
+  "Premium Infotainment Systems",
+  "Accessories",
+  "Gold Package",
+  "Automatic Car Wash"
 ];
 
 interface ApiResponse {

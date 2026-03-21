@@ -7,61 +7,59 @@ import { getServiceVideo } from "@/lib/serviceVideos";
 const services = [
   {
     icon: Sparkles,
-    title: "Interior Deep Cleaning",
-    description: "Complete interior restoration including seats, dashboard, carpets, and air vents.",
-    price: "Starting ₹1,999",
+    title: "Business Class Customisation",
+    description: "Exclusive upgrades and features for a luxury business-class experience.",
+  },
+  {
+    icon: Car,
+    title: "Full Car Customisation",
+    description: "Complete transformation of your vehicle to match your unique style and needs.",
+  },
+  {
+    icon: Car,
+    title: "Paint Protection Film (PPF)",
+    description: "Invisible PPF shield that protects your car's paint from scratches and chips.",
   },
   {
     icon: Shield,
     title: "Ceramic Coating",
     description: "Long-lasting nano ceramic protection that gives your car a mirror-like finish.",
-    price: "Starting ₹7,999",
-  },
-  {
-    icon: Car,
-    title: "Paint Protection Film",
-    description: "Invisible PPF shield that protects your car's paint from scratches and chips.",
-    price: "Starting ₹14,999",
   },
   {
     icon: Paintbrush,
-    title: "Car Polishing & Detailing",
-    description: "Multi-stage paint correction and polishing for a showroom-quality finish.",
-    price: "Starting ₹2,999",
+    title: "Body Kits",
+    description: "Custom body kits for enhanced aesthetics and aerodynamics.",
   },
   {
     icon: Camera,
-    title: "360° Camera Installation",
-    description: "Full surround-view camera system for safer and easier parking.",
-    price: "Starting ₹12,999",
+    title: "Premium Infotainment Systems",
+    description: "State-of-the-art infotainment upgrades for a premium driving experience.",
   },
   {
     icon: Wrench,
-    title: "Car Accessories",
+    title: "Accessories",
     description: "Premium aftermarket accessories to customize and enhance your ride.",
-    price: "Custom Quote",
   },
   {
-    icon: Droplets,
-    title: "Premium Car Wash",
-    description: "Thorough exterior and interior cleaning using premium products that leave your car spotless.",
-    price: "Starting ₹499",
+    icon: Shield,
+    title: "Gold Package",
+    description: "All-in-one premium care package for your vehicle.",
   },
 ];
 
 export default function ServicesSection() {
-  const [selectedService, setSelectedService] = useState<(typeof services)[number] | null>(null);
-  const selectedServiceVideo = selectedService ? getServiceVideo(selectedService.title) : { videoSrc: "", videoEmbedUrl: "" };
+  const [selectedService, setSelectedService] = useState(null);
+  const selectedServiceVideo = selectedService ? getServiceVideo(selectedService.title) : {};
 
   return (
-    <section id="services" className="py-24 bg-surface">
-      <div className="container mx-auto px-4">
+    <section className="py-16 md:py-24 lg:py-32">
+      <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.7 }}
+          className="mb-12 text-center"
         >
           <p className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-3">What We Offer</p>
           <h2 className="font-heading text-3xl md:text-5xl font-bold">
@@ -92,7 +90,6 @@ export default function ServicesSection() {
                 </div>
                 <h3 className="font-heading text-lg font-bold mb-2">{service.title}</h3>
                 <p className="text-muted-foreground text-sm mb-4 leading-relaxed">{service.description}</p>
-                <p className="text-primary font-heading font-semibold text-sm">{service.price}</p>
                 <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
                   <CirclePlay className="h-3.5 w-3.5" />
                   Watch Video Demo
@@ -101,6 +98,8 @@ export default function ServicesSection() {
             </motion.button>
           ))}
         </div>
+
+
 
         <Dialog open={Boolean(selectedService)} onOpenChange={(isOpen) => !isOpen && setSelectedService(null)}>
           <DialogContent className="max-w-3xl p-0 overflow-hidden">
@@ -133,7 +132,6 @@ export default function ServicesSection() {
                 <DialogHeader className="p-6 pt-5">
                   <DialogTitle className="font-heading text-2xl">{selectedService.title}</DialogTitle>
                   <DialogDescription className="text-sm">{selectedService.description}</DialogDescription>
-                  <p className="text-primary font-heading font-semibold text-sm">{selectedService.price}</p>
                 </DialogHeader>
               </>
             )}
