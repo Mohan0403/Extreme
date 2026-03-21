@@ -5,15 +5,15 @@ export type ServiceVideoConfig = {
 
 export const serviceVideos: Record<string, ServiceVideoConfig> = {
   "Business Class Customisation": {
-    videoSrc: "",
+    videoSrc: "/videos/services/business-class-customization.mp4",
     videoEmbedUrl: "",
   },
   "Full Car Customisation": {
-    videoSrc: "",
+    videoSrc: "/videos/services/full-car-customisation.mp4",
     videoEmbedUrl: "",
   },
   "Paint Protection Film (PPF)": {
-    videoSrc: "/videos/services/paint-polishing-film.mp4",
+    videoSrc: "/videos/services/ppf.mp4",
     videoEmbedUrl: "",
   },
   "Ceramic Coating": {
@@ -21,19 +21,19 @@ export const serviceVideos: Record<string, ServiceVideoConfig> = {
     videoEmbedUrl: "",
   },
   "Body Kits": {
-    videoSrc: "",
+    videoSrc: "/videos/services/body-kits.mp4",
     videoEmbedUrl: "",
   },
   "Premium Infotainment Systems": {
-    videoSrc: "",
+    videoSrc: "/videos/services/premium-infotainment-system.mp4",
     videoEmbedUrl: "",
   },
   "Accessories": {
-    videoSrc: "/videos/services/car-accessories.mp4",
+    videoSrc: "/videos/services/Accessories.mp4",
     videoEmbedUrl: "",
   },
   "Gold Package": {
-    videoSrc: "",
+    videoSrc: "/videos/services/gold-package.mp4",
     videoEmbedUrl: "",
   },
   "Automatic Car Wash": {
