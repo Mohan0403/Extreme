@@ -5,7 +5,7 @@ export type ServiceVideoConfig = {
 
 export const serviceVideos: Record<string, ServiceVideoConfig> = {
   "Business Class Customisation": {
-    videoSrc: "/videos/services/business-class-customization.mp4",
+    videoSrc: "/videos/services/business-class-customisation.mp4",
     videoEmbedUrl: "",
   },
   "Full Car Customisation": {
@@ -37,7 +37,7 @@ export const serviceVideos: Record<string, ServiceVideoConfig> = {
     videoEmbedUrl: "",
   },
   "Automatic Car Wash": {
-    videoSrc: "/videos/services/premium-car-wash.mp4",
+    videoSrc: "/videos/services/automatic-car-wash.mp4",
     videoEmbedUrl: "",
   },
 };

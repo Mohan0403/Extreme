@@ -36,12 +36,12 @@ export default function GallerySection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <p className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-3">Our Work</p>
+          <p className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-3">Gallery</p>
           <h2 className="font-heading text-3xl md:text-5xl font-bold">
-            Before &amp; <span className="text-gradient-gold">After</span>
+            Explore Our Recent Work
           </h2>
           <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
-            See the transformations we deliver — from dull and dirty to showroom perfection.
+            Discover some of the latest projects and services we have completed for our valued customers.
           </p>
         </motion.div>
 

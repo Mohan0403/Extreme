@@ -41,6 +41,11 @@ const services = [
     description: "Premium aftermarket accessories to customize and enhance your ride.",
   },
   {
+    icon: Droplets,
+    title: "Automatic Car Wash",
+    description: "Touchless, fast, and thorough automatic car wash for a spotless shine.",
+  },
+  {
     icon: Shield,
     title: "Gold Package",
     description: "All-in-one premium care package for your vehicle.",

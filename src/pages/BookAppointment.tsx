@@ -176,6 +176,7 @@ const serviceIcons: Record<string, typeof Shield> = {
   "Interior Detailing": Paintbrush,
   "Exterior Detailing": Droplets,
   "Dent Removal": Wrench,
+  "Automatic Car Wash": Droplets,
 };
 
 const vehicleIcons: Record<string, typeof Car> = {

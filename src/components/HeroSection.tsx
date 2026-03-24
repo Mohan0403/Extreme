@@ -5,7 +5,7 @@ import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const heroImages = [
-  "/images/hero-slider/hero1.jpeg"
+  "/images/hero-slider/hero.jpeg"
 ];
 
 export default function HeroSection() {
@@ -79,14 +79,6 @@ export default function HeroSection() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="max-w-4xl mx-auto"
         >
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-6"
-          >
-            Chennai's Premium Auto Care Studio
-          </motion.p>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
