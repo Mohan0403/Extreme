@@ -29,7 +29,7 @@ export default function HeroSection() {
             <motion.img
               src={heroImages[current]}
               alt="Xtreme Car Care detailing"
-              className="absolute inset-0 h-full w-full object-cover object-center brightness-95 contrast-110 saturate-110"
+              className="absolute inset-0 h-full w-full object-cover object-center brightness-110 contrast-110 saturate-110"
               initial={{ scale: 1.12, x: "2%", y: "1%" }}
               animate={{ scale: 1.0, x: "-2%", y: "-1%" }}
               transition={{ duration: 6, ease: "linear" }}
@@ -49,9 +49,9 @@ export default function HeroSection() {
         />
 
         {/* Vignette */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%)" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/30 to-background/45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/35 via-transparent to-background/20" />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.25) 100%)" }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/10 to-background/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/15 via-transparent to-background/10" />
       </div>
 
       {/* Slide indicator dots */}
