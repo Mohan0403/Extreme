@@ -4,61 +4,66 @@ import { Droplets, Shield, Paintbrush, Camera, Wrench, Sparkles, Car, CirclePlay
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getServiceVideo } from "@/lib/serviceVideos";
 
-const services = [
-  {
-    icon: Sparkles,
-    title: "Business Class Customisation",
-    description: "Exclusive upgrades and features for a luxury business-class experience.",
-  },
-  {
-    icon: Car,
-    title: "Full Car Customisation",
-    description: "Complete transformation of your vehicle to match your unique style and needs.",
-  },
-  {
-    icon: Car,
-    title: "Paint Protection Film (PPF)",
-    description: "Invisible PPF shield that protects your car's paint from scratches and chips.",
-  },
-  {
-    icon: Shield,
-    title: "Ceramic Coating",
-    description: "Long-lasting nano ceramic protection that gives your car a mirror-like finish.",
-  },
-  {
-    icon: Paintbrush,
-    title: "Body Kits",
-    description: "Custom body kits for enhanced aesthetics and aerodynamics.",
-  },
-  {
-    icon: Camera,
-    title: "Premium Infotainment Systems",
-    description: "State-of-the-art infotainment upgrades for a premium driving experience.",
-  },
-  {
-    icon: Wrench,
-    title: "Accessories",
-    description: "Premium aftermarket accessories to customize and enhance your ride.",
-  },
-  {
-    icon: Droplets,
-    title: "Automatic Car Wash",
-    description: "Touchless, fast, and thorough automatic car wash for a spotless shine.",
-  },
-  {
-    icon: Shield,
-    title: "Gold Package",
-    description: "All-in-one premium care package for your vehicle.",
-  },
-];
-
 export default function ServicesSection() {
+  const services = [
+    {
+      title: "Business Class Customisation",
+      description: "Step into luxury! Our business class upgrades turn your car into a true executive lounge on wheels.",
+      featured: true,
+    },
+    {
+      title: "Full Car Customisation",
+      description: "Dream it, drive it! We’ll transform your ride to match your personality and style.",
+    },
+    {
+      title: "Paint Protection Film (PPF)",
+      description: "Keep your car looking brand new with our invisible, ultra-tough paint shield.",
+    },
+    {
+      title: "Ceramic Coating",
+      description: "Shine that lasts! Our nano-ceramic coat gives your car a mirror finish and serious protection.",
+      featured: true,
+    },
+    {
+      title: "Body Kits",
+      description: "Stand out from the crowd with custom body kits for a bold, aerodynamic look.",
+    },
+    {
+      title: "Premium Infotainment Systems",
+      description: "Upgrade your drive with the latest in entertainment and connectivity.",
+    },
+    {
+      title: "Accessories",
+      description: "From sporty to practical, we have the perfect add-ons for your ride.",
+    },
+    {
+      title: "Automatic Car Wash",
+      description: "Fast, spotless, and touchless—let your car sparkle in minutes!",
+    },
+    {
+      title: "Gold Package",
+      description: "The ultimate all-in-one care for your pride and joy.",
+    },
+  ];
+
+  // Alternating border colors for cards
+  const borderColors = [
+    'border-t-4 border-yellow-400',
+    'border-t-4 border-primary',
+    'border-t-4 border-blue-400',
+    'border-t-4 border-green-400',
+    'border-t-4 border-pink-400',
+    'border-t-4 border-orange-400',
+  ];
+
   const [selectedService, setSelectedService] = useState(null);
   const selectedServiceVideo = selectedService ? getServiceVideo(selectedService.title) : {};
 
   return (
-    <section className="py-16 md:py-24 lg:py-32">
-      <div className="container">
+    <section className="py-16 md:py-24 lg:py-32 relative bg-[#191c1f] overflow-x-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-20" style={{background: 'repeating-linear-gradient(135deg, #23272b 0px, #23272b 2px, transparent 2px, transparent 20px)'}} />
+      <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -72,40 +77,36 @@ export default function ServicesSection() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Horizontal scrollable cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, i) => (
-            <motion.button
-              type="button"
+            <motion.div
               key={service.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              onClick={() => setSelectedService(service)}
-              className="group relative rounded-xl bg-card border border-border p-6 transition-all duration-300 hover:border-primary/40 hover:glow-gold overflow-hidden text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              whileHover={{ scale: 1.04 }}
+              className={`relative rounded-2xl bg-card shadow-xl ${borderColors[i % borderColors.length]} transition-all duration-300 flex flex-col items-center px-6 pt-12 pb-20 min-h-[340px]`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute right-4 top-4 z-20 rounded-full border border-primary/40 bg-background/70 p-2 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
-                <CirclePlay className="h-4 w-4" />
+              {/* Clear, large number */}
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center justify-center h-16 w-16 rounded-full bg-yellow-400 text-black font-extrabold text-3xl shadow-lg border-4 border-background select-none z-20" style={{letterSpacing: '0.05em', textShadow: '0 2px 8px #0008'}}>
+                {String(i + 1).padStart(2, '0')}
               </div>
-              <div className="relative z-10">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                  <service.icon className="h-6 w-6" />
-                </div>
-                <h3 className="font-heading text-lg font-bold mb-2">{service.title}</h3>
-                <p className="text-muted-foreground text-sm mb-4 leading-relaxed">{service.description}</p>
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
-                  <CirclePlay className="h-3.5 w-3.5" />
-                  Watch Video Demo
-                </div>
-              </div>
-            </motion.button>
+              <h3 className="font-heading text-2xl font-bold mb-2 mt-8 text-center relative z-10">{service.title}</h3>
+              <p className="text-muted-foreground text-base mb-4 leading-relaxed font-medium text-center">{service.description}</p>
+              <button
+                type="button"
+                onClick={() => setSelectedService(service)}
+                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center gap-2 rounded-full border border-primary/50 bg-yellow-400 px-6 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-lg hover:bg-primary hover:text-white transition-all"
+              >
+                Watch Video Demo
+              </button>
+            </motion.div>
           ))}
         </div>
 
-
-
+        {/* Modal for video demo */}
         <Dialog open={Boolean(selectedService)} onOpenChange={(isOpen) => !isOpen && setSelectedService(null)}>
           <DialogContent className="max-w-3xl p-0 overflow-hidden">
             {selectedService && (
