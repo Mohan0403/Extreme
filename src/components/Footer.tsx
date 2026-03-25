@@ -4,7 +4,8 @@ import logo from "@/assets/logo.jpeg";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border py-12">
+    <footer className="py-12">
+      <div className="luxury-gradient-line mb-8" />
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
@@ -52,7 +53,8 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-border mt-8 pt-8 text-center">
+        <div className="mt-8 pt-8 text-center">
+          <div className="luxury-gradient-line mb-8" />
           <p className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} Xtreme Car Care. All rights reserved.
           </p>

@@ -71,7 +71,8 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="glass border-t border-border lg:hidden">
+        <div className="glass lg:hidden">
+          <div className="luxury-gradient-line mb-2" />
           <div className="container mx-auto flex flex-col gap-3 px-4 py-4">
             {navLinks.map((link) => (
               <button

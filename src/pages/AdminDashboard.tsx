@@ -234,7 +234,7 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${
                           booking.status === "completed"
-                            ? "bg-[hsl(142,70%,45%)]/20 text-[hsl(142,70%,45%)]"
+                            ? "bg-gradient-gold/20 text-gradient-gold"
                             : "bg-primary/20 text-primary"
                         }`}>
                           {booking.status === "completed" ? "Completed" : "Booked"}
@@ -245,7 +245,7 @@ export default function AdminDashboard() {
                           {booking.status === "booked" && (
                             <button
                               onClick={() => handleComplete(booking.id)}
-                              className="text-[hsl(142,70%,45%)] hover:text-[hsl(142,70%,55%)] transition-colors"
+                              className="text-gradient-gold hover:text-[#bfa76a] transition-colors"
                               title="Mark completed"
                             >
                               <CheckCircle className="h-4 w-4" />

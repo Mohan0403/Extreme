@@ -4,7 +4,7 @@ import { Star, Users, Car, Award } from "lucide-react";
 const stats = [
   { icon: Star, value: "4.8", label: "Google Rating", suffix: "★" },
   { icon: Users, value: "341", label: "Happy Reviews", suffix: "+" },
-  { icon: Car, value: "300", label: "Cars Serviced", suffix: "+" },
+  { icon: Car, value: "1M", label: "Happy Customers", suffix: "+" },
   { icon: Award, value: "5", label: "Years Experience", suffix: "+" },
 ];
 
@@ -21,10 +21,10 @@ export default function AboutSection() {
           >
             <p className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-3">About Us</p>
             <h2 className="font-heading text-3xl md:text-5xl font-bold mb-6">
-              Chennai's Most <span className="text-gradient-gold">Trusted</span> Auto Care
+              Chennai's Most <span className="text-gradient-gold text-[#bfa76a]">Trusted</span> Auto Care
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              Xtreme Car Care is one of Chennai's most trusted car detailing and restoration studios. With over 300+ happy customers and a 4.8 star rating, we specialize in high-quality detailing, paint protection, and automotive upgrades.
+              Xtreme Car Care is one of Chennai's most trusted car detailing and restoration studios. With over 1M+ happy customers and a 4.8 star rating, we specialize in high-quality detailing, paint protection, and automotive upgrades.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-8">
               Our team of trained professionals uses only premium products and state-of-the-art equipment to ensure your vehicle receives the best care possible. From basic washes to complete ceramic coatings, we treat every car like it's our own.
@@ -47,7 +47,7 @@ export default function AboutSection() {
                 alt="Xtreme Car Care shop"
                 className="w-full h-80 object-cover rounded-2xl"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0B99] to-transparent" />
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-6">

@@ -46,15 +46,7 @@ export default function ServicesSection() {
     },
   ];
 
-  // Alternating border colors for cards
-  const borderColors = [
-    'border-t-4 border-yellow-400',
-    'border-t-4 border-primary',
-    'border-t-4 border-blue-400',
-    'border-t-4 border-green-400',
-    'border-t-4 border-pink-400',
-    'border-t-4 border-orange-400',
-  ];
+  // No borderColors needed, using luxury-gradient-line
 
   const [selectedService, setSelectedService] = useState(null);
   const selectedServiceVideo = selectedService ? getServiceVideo(selectedService.title) : {};
@@ -87,18 +79,24 @@ export default function ServicesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               whileHover={{ scale: 1.04 }}
-              className={`relative rounded-2xl bg-card shadow-xl ${borderColors[i % borderColors.length]} transition-all duration-300 flex flex-col items-center px-6 pt-12 pb-20 min-h-[340px]`}
+              className={`relative rounded-2xl bg-card shadow-xl transition-all duration-300 flex flex-col items-center px-6 pt-12 pb-20 min-h-[340px]`}
             >
+              <div className="absolute left-0 right-0 top-7 z-0 flex items-center justify-center">
+                <div className="luxury-gradient-line" style={{height: '3px', width: '90%'}} />
+              </div>
               {/* Clear, large number */}
               <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center justify-center h-16 w-16 rounded-full bg-yellow-400 text-black font-extrabold text-3xl shadow-lg border-4 border-background select-none z-20" style={{letterSpacing: '0.05em', textShadow: '0 2px 8px #0008'}}>
-                {String(i + 1).padStart(2, '0')}
+                <span className="bg-gradient-gold w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-3xl text-[#18171c] shadow-lg border-2 border-[#bfa76a] z-10" style={{letterSpacing: '0.05em', textShadow: '0 2px 8px #bfa76a88'}}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
               </div>
-              <h3 className="font-heading text-2xl font-bold mb-2 mt-8 text-center relative z-10">{service.title}</h3>
-              <p className="text-muted-foreground text-base mb-4 leading-relaxed font-medium text-center">{service.description}</p>
+              <h3 className="font-heading text-2xl md:text-3xl font-bold gold mb-2 mt-8 text-center relative z-10" style={{fontFamily: 'Playfair Display Variable, Georgia, serif', letterSpacing: '0.02em', textShadow: '0 2px 8px #0008'}}>{service.title}</h3>
+              <p className="text-[#b0a98c] text-base mb-4 leading-relaxed font-medium text-center" style={{fontFamily: 'Arial, sans-serif'}}>{service.description}</p>
               <button
                 type="button"
                 onClick={() => setSelectedService(service)}
-                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center gap-2 rounded-full border border-primary/50 bg-yellow-400 px-6 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-lg hover:bg-primary hover:text-white transition-all"
+                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center gap-2 rounded-full bg-gradient-gold px-8 py-3 text-base font-heading font-semibold uppercase tracking-wide text-[#18171c] shadow-lg hover:scale-105 transition-all border-none"
+                style={{letterSpacing: '0.04em', textShadow: '0 1px 2px #fff8e1cc'}}
               >
                 Watch Video Demo
               </button>

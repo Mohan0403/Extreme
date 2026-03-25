@@ -389,8 +389,8 @@ function OptionCard({
       onClick={onClick}
       className={`relative rounded-xl border p-4 text-left transition-all duration-200 ${
         selected
-          ? "border-primary bg-primary/10 shadow-[0_0_20px_hsla(51,100%,50%,0.18)]"
-          : "border-border bg-secondary/70 hover:border-primary/50"
+          ? "border-gradient-gold bg-gradient-gold/10 shadow-[0_0_20px_#bfa76a33]"
+          : "border-border bg-secondary/70 hover:border-gradient-gold/50"
       }`}
     >
       <div className="flex items-start gap-3">

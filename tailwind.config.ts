@@ -14,30 +14,31 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ["Montserrat", "sans-serif"],
-        body: ["Inter", "sans-serif"],
+        heading: ["Georgia", "Times New Roman", "serif"],
+        body: ["Arial", "sans-serif"],
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "#23222a",
+        input: "#23222a",
+        ring: "#bfa76a",
+        background: "#0B0B0B",
+        foreground: "#EAEAEA",
+        gold: {
+          DEFAULT: "#bfa76a",
+          light: "#e2c98f",
+          dark: "#8c7a4f"
+        },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#bfa76a",
+          foreground: "#0B0B0B",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#23222a",
+          foreground: "#EAEAEA",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#23222a",
+          foreground: "#b0b0b0",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
