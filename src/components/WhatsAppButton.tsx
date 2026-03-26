@@ -5,7 +5,12 @@ export default function WhatsAppButton() {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
       <a
         href="tel:+919884149111"
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform duration-300 animate-pulse-gold"
+        className="flex h-14 w-14 items-center justify-center rounded-full shadow-lg hover:scale-110 transition-transform duration-300 animate-pulse-gold"
+        style={{
+          background: 'linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)',
+          color: '#18171c',
+          boxShadow: '0 4px 18px 0 #B8892F55',
+        }}
         aria-label="Call Now"
       >
         <Phone className="h-6 w-6" />

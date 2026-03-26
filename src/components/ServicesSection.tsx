@@ -91,14 +91,24 @@ export default function ServicesSection() {
                 </span>
               </div>
               <h3 className="font-heading text-2xl md:text-3xl font-bold gold mb-2 mt-8 text-center relative z-10" style={{fontFamily: 'Playfair Display Variable, Georgia, serif', letterSpacing: '0.02em', textShadow: '0 2px 8px #0008'}}>{service.title}</h3>
-              <p className="text-[#b0a98c] text-base mb-4 leading-relaxed font-medium text-center" style={{fontFamily: 'Arial, sans-serif'}}>{service.description}</p>
+              <p className="text-white text-base mb-4 leading-relaxed font-medium text-center" style={{fontFamily: 'Arial, sans-serif'}}>{service.description}</p>
               <button
                 type="button"
                 onClick={() => setSelectedService(service)}
-                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center gap-2 rounded-full bg-gradient-gold px-8 py-3 text-base font-heading font-semibold uppercase tracking-wide text-[#18171c] shadow-lg hover:scale-105 transition-all border-none"
-                style={{letterSpacing: '0.04em', textShadow: '0 1px 2px #fff8e1cc'}}
+                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold px-7 py-2 md:px-8 md:py-3 text-base font-heading font-semibold uppercase tracking-wide text-[#18171c] shadow-lg hover:scale-105 transition-all border-none focus:outline-none focus:ring-2 focus:ring-gold"
+                style={{
+                  letterSpacing: '0.04em',
+                  textShadow: '0 1px 2px #fff8e1cc',
+                  minWidth: '170px',
+                  minHeight: '44px',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.22)',
+                  border: '1px solid rgba(255, 215, 120, 0.25)',
+                  transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+                }}
               >
-                Watch Video Demo
+                WATCH VIDEO DEMO
               </button>
             </motion.div>
           ))}

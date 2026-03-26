@@ -49,17 +49,27 @@
     letter-spacing: 0.01em;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: #bfa76a;
+    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    background: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
     text-shadow: 0 2px 16px rgba(0,0,0,0.18);
   }
   .gold, .text-gold, .gold-accent {
-    color: #bfa76a !important;
+    background: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-weight: 700 !important;
   }
   .bg-gold, .gold-bg {
-    background: linear-gradient(90deg, #bfa76a 0%, #c2b280 100%) !important;
+    background: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%) !important;
     color: #18171c !important;
   }
   .card {
@@ -75,30 +85,30 @@
     color: #eaeaea;
   }
   .primary, .btn-primary {
-    background: linear-gradient(90deg, #bfa76a 0%, #c2b280 100%) !important;
+    background: linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%) !important;
     color: #18171c !important;
     border: none;
     border-radius: 12px;
     padding: 16px 40px;
     font-size: 1.15rem;
     font-family: 'Playfair Display Variable', Georgia, serif;
-    font-weight: 600;
-    box-shadow: 0 6px 32px 0 #bfa76a33, 0 1.5px 6px 0 #00000022;
+    font-weight: 700;
+    box-shadow: 0 6px 32px 0 #B8892F33, 0 1.5px 6px 0 #00000022;
     cursor: pointer;
     transition: box-shadow 0.2s, transform 0.2s;
   }
   .primary:hover, .btn-primary:hover {
-    box-shadow: 0 8px 32px 0 #bfa76a44;
+    box-shadow: 0 8px 32px 0 #E6C16A44;
     transform: translateY(-2px) scale(1.03);
   }
   .secondary, .btn-secondary {
-    border: 1.5px solid #bfa76a !important;
+    border: 1.5px solid #E6C16A !important;
     background: transparent !important;
-    color: #bfa76a !important;
+    color: #E6C16A !important;
     border-radius: 12px;
     padding: 16px 40px;
     font-family: 'Playfair Display Variable', Georgia, serif;
-    font-weight: 600;
+    font-weight: 700;
   }
   .hero-content h1 {
     text-shadow: 0 2px 16px rgba(0,0,0,0.45);
@@ -134,10 +144,16 @@
     padding: 12px 25px;
   }
   .tagline-strip {
-    color: #D4AF37;
+    background: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
     letter-spacing: 2px;
     text-align: center;
     padding: 20px;
+    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-weight: 700 !important;
   }
     --sidebar-primary: 51 100% 50%;
     --sidebar-primary-foreground: 210 8% 15%;
@@ -172,10 +188,12 @@
 @layer utilities {
   .text-gradient-gold {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(90deg, #bfa76a 0%, #c2b280 100%);
+    background-image: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
+    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-weight: 700 !important;
   }
   .bg-gradient-gold {
-    background-image: linear-gradient(90deg, #bfa76a 0%, #c2b280 100%);
+    background-image: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
   }
   .bg-surface {
     background-color: hsl(var(--surface));
