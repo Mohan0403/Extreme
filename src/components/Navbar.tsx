@@ -37,13 +37,8 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Xtreme Car Care" className="h-10 w-10 rounded-full object-cover" />
-          <span className="font-heading text-lg font-bold tracking-wider text-gradient-gold">
-            XTREME CAR CARE
-          </span>
-        </Link>
+      <div className="flex items-center justify-between w-full py-3">
+        <div className="flex items-center gap-3 min-w-[180px]">{/* Placeholder to preserve navbar spacing */}</div>
 
         <div className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => (
@@ -73,7 +68,7 @@ export default function Navbar() {
       {open && (
         <div className="glass lg:hidden">
           <div className="luxury-gradient-line mb-2" />
-          <div className="container mx-auto flex flex-col gap-3 px-4 py-4">
+          <div className="flex flex-col gap-3 w-full py-4 px-2">
             {navLinks.map((link) => (
               <button
                 key={link.label}

@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Phone, Star, Smile, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.jpeg";
 
 
 // Use the most premium, cinematic black car image available
@@ -10,23 +11,18 @@ const heroImage = "/images/hero-slider/hero.jpeg";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 font-sans bg-[#0B0B0B]">
-      {/* Cinematic luxury car background */}
-      <div className="absolute inset-0">
-        <motion.img
-          src={heroImage}
-          alt="Luxury black car - Xtreme Shine Studio"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          initial={{ scale: 1.08, opacity: 0.7 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
-          style={{ filter: "brightness(0.82) contrast(1.08) saturate(1.08)" }}
-        />
-        {/* Subtle dark overlay for legibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/85" />
-        {/* Vignette for premium mood */}
-        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.38) 100%)" }} />
-      </div>
+    <section
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-16 font-sans"
+      style={{
+        background: `linear-gradient(180deg, rgba(18,18,18,0.72) 0%, rgba(24,24,24,0.38) 60%, rgba(30,30,30,0.62) 100%), radial-gradient(ellipse at 50% 38%, rgba(0,0,0,0.09) 60%, rgba(0,0,0,0.28) 100%), url(${heroImage}) center center / cover no-repeat`,
+        width: '100%',
+        minHeight: '100vh',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        filter: 'brightness(1.18) contrast(1.13) saturate(1.04)'
+      }}
+    >
 
       {/* Slide indicator dots */}
       {/* Slide indicator dots removed: only one image is used */}
@@ -35,20 +31,27 @@ export default function HeroSection() {
       {/* (Removed old gold line; using only the new luxury gradient line above heading) */}
 
 
-      <div className="relative z-10 container mx-auto px-2 sm:px-4 text-center flex flex-col items-center justify-center max-w-full">
-        {/* Luxury gold gradient line above heading */}
-        <div className="luxury-gradient-line mb-8 mt-2" aria-hidden="true" />
+      <div className="hero-content relative z-10 w-full text-center flex flex-col items-center justify-center" style={{left: 0, right: 0, position: 'relative'}}>
+
+        {/* Logo and Brand Name above gold line */}
+        <div className="hero-logo-row mb-1 mt-[-2.1rem]">
+          <img src={logo} alt="Logo" style={{ height: '2.8rem', width: '2.8rem', minWidth: '2.8rem', minHeight: '2.8rem', objectFit: 'cover', borderRadius: '0.4em' }} />
+          <span className="hero-brand-name">
+            <span className="hero-brand-gold-gradient">XTREME</span>
+            <span className="hero-brand-white"> CAR </span>
+            <span className="hero-brand-gold-gradient">CARE</span>
+          </span>
+        </div>
 
         {/* Main headline: Elevate Your Driving Experience */}
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.8 }}
-          className="mb-7 px-1 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] break-words max-w-full"
+          className="hero-heading mb-7 text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-[4rem] break-words max-w-full"
           style={{
             fontFamily: "'Playfair Display Variable', 'Georgia', 'Times New Roman', serif",
             fontWeight: 700,
-            fontSize: '4rem',
             lineHeight: 1.08,
             letterSpacing: '0.01em',
             color: '#fff',
@@ -58,32 +61,36 @@ export default function HeroSection() {
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
-            <span style={{
-              color: '#fff !important',
-              background: 'none',
-              WebkitBackgroundClip: 'initial',
-              WebkitTextFillColor: 'initial',
-              fontSize: '4.2rem',
-              fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: '0.01em',
-              display: 'block',
-              opacity: 0.88,
-            }}>
+            <span
+              className="block font-bold text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-[4rem] leading-tight opacity-90"
+              style={{
+                color: '#fff',
+                background: 'none',
+                WebkitBackgroundClip: 'initial',
+                WebkitTextFillColor: 'initial',
+                fontWeight: 700,
+                lineHeight: 1.05,
+                letterSpacing: '0.01em',
+                display: 'block',
+                opacity: 0.88,
+              }}
+            >
               Elevate Your
             </span>
-          <span style={{
-            background: 'linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            color: 'transparent',
-            fontWeight: 800,
-            fontSize: '1.2em',
-            display: 'inline-block',
-            letterSpacing: '0.01em',
-          }}>
-            Driving Experience
-          </span>
+            <span
+              className="block font-extrabold text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-[4rem] leading-tight gold"
+              style={{
+                background: 'linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+                fontWeight: 800,
+                letterSpacing: '0.01em',
+                display: 'block',
+              }}
+            >
+              Driving Experience
+            </span>
         </motion.h1>
 
         {/* Subheadline: Luxury Detailing • Paint Protection • Custom Interiors */}
@@ -91,11 +98,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="flex flex-wrap justify-center items-center gap-2 mb-4 tracking-wide w-full text-base xs:text-lg sm:text-xl md:text-2xl"
+          className="hero-subheading flex flex-row flex-nowrap justify-center items-center gap-2 mb-4 tracking-wide w-full text-sm xs:text-base sm:text-lg md:text-xl break-words max-w-full px-2"
           style={{
             fontFamily: "'Playfair Display Variable', 'Georgia', 'Times New Roman', serif",
             fontWeight: 600,
-            fontSize: '1.35rem',
+            fontSize: '1.1rem',
             color: '#F7F5EF',
             letterSpacing: '0.12em',
             textShadow: '0 2px 8px rgba(0,0,0,0.18)',
@@ -107,8 +114,6 @@ export default function HeroSection() {
           }}
         >
           <span style={{fontFamily: "inherit", fontWeight: 600, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Luxury Detailing</span>
-          <span className="mx-2 text-[#E6C16A]" style={{fontSize: '1.5rem', fontWeight: 700}}>&bull;</span>
-          <span style={{fontFamily: "inherit", fontWeight: 600, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Paint Protection</span>
           <span className="mx-2 text-[#E6C16A]" style={{fontSize: '1.5rem', fontWeight: 700}}>&bull;</span>
           <span style={{fontFamily: "inherit", fontWeight: 600, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Custom Interiors</span>
         </motion.div>
@@ -134,7 +139,7 @@ export default function HeroSection() {
         >
           <Link to="/book" className="w-full max-w-xs">
             <button
-              className="w-full py-5 px-8 text-lg md:text-xl rounded-xl font-semibold uppercase tracking-wider shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E6C16A] transition-all duration-200"
+              className="hero-btn w-full py-5 px-8 text-lg md:text-xl rounded-xl font-semibold uppercase tracking-wider shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E6C16A] transition-all duration-200"
               style={{
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 color: "#1A1A1A",
@@ -189,11 +194,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
-          className="mt-2 flex flex-row flex-wrap items-center justify-center gap-0 w-full"
+          className="hero-stats mt-2 flex flex-row flex-wrap items-center justify-center gap-x-2 sm:gap-x-6 w-full break-words max-w-full px-2"
         >
           <div className="flex flex-row items-center justify-center w-full max-w-2xl">
-            <div className="flex-1 text-center px-2 min-w-[90px]">
-              <p className="font-serif text-3xl md:text-4xl lg:text-5xl font-semibold" style={{
+            <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
+              <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -202,9 +207,9 @@ export default function HeroSection() {
               }}>4.8★</p>
               <p className="text-sm md:text-base text-[#e2decf] mt-1 tracking-wide font-sans">Google Rating</p>
             </div>
-            <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55]" />
-            <div className="flex-1 text-center px-2 min-w-[90px]">
-              <p className="font-serif text-3xl md:text-4xl lg:text-5xl font-semibold" style={{
+            <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55] hidden sm:block" />
+            <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
+              <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -213,9 +218,9 @@ export default function HeroSection() {
               }}>1000+</p>
               <p className="text-sm md:text-base text-[#e2decf] mt-1 tracking-wide font-sans">Cars Transformed</p>
             </div>
-            <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55]" />
-            <div className="flex-1 text-center px-2 min-w-[90px]">
-              <p className="font-serif text-3xl md:text-4xl lg:text-5xl font-semibold" style={{
+            <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55] hidden sm:block" />
+            <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
+              <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",

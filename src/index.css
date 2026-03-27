@@ -40,13 +40,16 @@
     --sidebar-background: #23222a;
     --sidebar-foreground: #EAEAEA;
   }
-  body {
+  html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
     background: #0B0B0B;
     color: #EAEAEA;
-    margin: 0;
     min-height: 100vh;
     letter-spacing: 0.01em;
+    overflow-x: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;

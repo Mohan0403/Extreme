@@ -55,7 +55,7 @@ export default function ServicesSection() {
     <section className="py-16 md:py-24 lg:py-32 relative bg-[#191c1f] overflow-x-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-20" style={{background: 'repeating-linear-gradient(135deg, #23272b 0px, #23272b 2px, transparent 2px, transparent 20px)'}} />
-      <div className="container relative z-10">
+      <div className="w-full relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -95,20 +95,30 @@ export default function ServicesSection() {
               <button
                 type="button"
                 onClick={() => setSelectedService(service)}
-                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold px-7 py-2 md:px-8 md:py-3 text-base font-heading font-semibold uppercase tracking-wide text-[#18171c] shadow-lg hover:scale-105 transition-all border-none focus:outline-none focus:ring-2 focus:ring-gold"
+                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold px-7 py-2 md:px-8 md:py-2.5 text-base font-heading font-semibold uppercase tracking-wide text-[#18171c] shadow-lg hover:scale-105 transition-all border-none focus:outline-none focus:ring-2 focus:ring-gold watch-video-demo-btn"
                 style={{
                   letterSpacing: '0.04em',
                   textShadow: '0 1px 2px #fff8e1cc',
-                  minWidth: '170px',
-                  minHeight: '44px',
+                  minWidth: '150px',
+                  minHeight: '38px',
+                  paddingTop: '0.5em',
+                  paddingBottom: '0.5em',
+                  paddingLeft: '1.5em',
+                  paddingRight: '1.5em',
                   fontSize: '1rem',
                   fontWeight: 700,
+                  borderRadius: '2em',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.22)',
                   border: '1px solid rgba(255, 215, 120, 0.25)',
                   transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+                  width: 'auto',
+                  height: 'auto',
+                  lineHeight: 1.2,
+                  whiteSpace: 'normal',
+                  textAlign: 'center',
                 }}
               >
-                WATCH VIDEO DEMO
+                <span className="watch-video-demo-text">WATCH VIDEO<br/>DEMO</span>
               </button>
             </motion.div>
           ))}

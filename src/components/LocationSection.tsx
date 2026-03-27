@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export default function LocationSection() {
   return (
     <section id="contact" className="py-24 bg-surface">
-      <div className="container mx-auto px-4">
+      <div className="w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
