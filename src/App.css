@@ -36,7 +36,7 @@
     justify-content: center !important;
     gap: 0.5em !important;
     margin-bottom: 0.3em !important;
-    margin-top: 0.5em !important;
+    margin-top: 0.1em !important; /* moved up for mobile */
   }
   .hero-logo-row img {
     margin-right: 0.5em !important;
@@ -70,7 +70,7 @@
       justify-content: center !important;
       gap: 0.4em !important;
       margin-bottom: 0.2em !important;
-      margin-top: 0.5em !important;
+      margin-top: -0.7em !important; /* moved further up for small mobile */
       display: flex !important;
     }
   }
