@@ -35,7 +35,7 @@ export default function HeroSection() {
       {/* (Removed old gold line; using only the new luxury gradient line above heading) */}
 
 
-      <div className="relative z-10 container mx-auto px-4 text-center flex flex-col items-center justify-center">
+      <div className="relative z-10 container mx-auto px-2 sm:px-4 text-center flex flex-col items-center justify-center max-w-full">
         {/* Luxury gold gradient line above heading */}
         <div className="luxury-gradient-line mb-8 mt-2" aria-hidden="true" />
 
@@ -44,7 +44,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.8 }}
-          className="mb-7"
+          className="mb-7 px-1 text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] break-words max-w-full"
           style={{
             fontFamily: "'Playfair Display Variable', 'Georgia', 'Times New Roman', serif",
             fontWeight: 700,
@@ -91,7 +91,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="flex flex-wrap justify-center items-center gap-2 mb-4 tracking-wide"
+          className="flex flex-wrap justify-center items-center gap-2 mb-4 tracking-wide w-full text-base xs:text-lg sm:text-xl md:text-2xl"
           style={{
             fontFamily: "'Playfair Display Variable', 'Georgia', 'Times New Roman', serif",
             fontWeight: 600,
@@ -189,7 +189,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
-          className="mt-2 flex flex-wrap items-center justify-center gap-0 md:gap-0 w-full"
+          className="mt-2 flex flex-row flex-wrap items-center justify-center gap-0 w-full"
         >
           <div className="flex flex-row items-center justify-center w-full max-w-2xl">
             <div className="flex-1 text-center px-2 min-w-[90px]">
