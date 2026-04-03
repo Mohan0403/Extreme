@@ -60,19 +60,17 @@
     vertical-align: middle !important;
   }
 
-  @media (max-width: 768px) {
-    .hero-logo-row .hero-brand-name {
-      font-size: 1.2rem !important;
-    }
-    .hero-logo-row {
-      flex-direction: row !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 0.4em !important;
-      margin-bottom: 0.2em !important;
-      margin-top: -0.7em !important; /* moved further up for small mobile */
-      display: flex !important;
-    }
+  .hero-logo-row .hero-brand-name {
+    font-size: 1.2rem !important;
+  }
+  .hero-logo-row {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.4em !important;
+    margin-bottom: 0.2em !important;
+    margin-top: 0.2em !important;
+    display: flex !important;
   }
   .hero-logo-row .hero-brand-gold-gradient {
     background: linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%) !important;
@@ -223,7 +221,7 @@
     line-height: 2.5rem !important;
   }
   .hero-content {
-    max-width: 400px !important;
+    max-width: 460px !important;
     margin-left: auto !important;
     margin-right: auto !important;
     padding-left: 1rem !important;
@@ -234,19 +232,20 @@
     line-height: 2.3rem !important;
   }
   .hero-subheading {
-    font-size: 0.92rem !important;
-    line-height: 1.1 !important;
-    margin-bottom: 0.7rem !important;
+    font-size: 1.2rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 1.15rem !important;
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 0.15rem !important;
-    white-space: nowrap !important;
-    overflow-x: auto !important;
+    gap: 0.3rem !important;
+    white-space: normal !important;
+    overflow-x: visible !important;
     width: 100% !important;
     max-width: 100% !important;
+    text-align: center !important;
   }
   .hero-btn {
     font-size: 0.95rem !important;
@@ -309,11 +308,20 @@
     padding-bottom: 1.2rem !important;
   }
   .hero-content {
-    max-width: 320px !important;
+    max-width: 390px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  .hero-logo-row .hero-brand-name {
+    font-size: 1.05rem !important;
+  }
+  .hero-logo-row img {
+    height: 1.9em !important;
+    width: 1.9em !important;
+    min-width: 1.9em !important;
+    min-height: 1.9em !important;
   }
   .hero-section,
   .hero-section *,
@@ -333,22 +341,23 @@
   }
   .hero-heading {
     font-size: 1.7rem !important;
-    line-height: 2rem !important;
+    line-height: 1.95rem !important;
   }
   .hero-subheading {
-    font-size: 0.7rem !important;
-    line-height: 1 !important;
-    margin-bottom: 0.5rem !important;
+    font-size: 1.1rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 0.08rem !important;
-    white-space: nowrap !important;
-    overflow-x: auto !important;
+    gap: 0.2rem !important;
+    white-space: normal !important;
+    overflow-x: visible !important;
     width: 100% !important;
     max-width: 100% !important;
+    text-align: center !important;
   }
   .hero-btn {
     font-size: 0.85rem !important;
@@ -367,11 +376,6 @@
     flex: 1 1 45% !important;
     margin-bottom: 0.2rem !important;
   }
-    white-space: nowrap !important;
-    overflow-x: auto !important;
-    text-align: center !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
   .navbar-mobile-menu {
     top: 50px;
     padding: 1rem 0;

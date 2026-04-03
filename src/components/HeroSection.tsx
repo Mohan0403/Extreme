@@ -14,13 +14,13 @@ export default function HeroSection() {
     <section
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-16 font-sans"
       style={{
-        background: `linear-gradient(180deg, rgba(18,18,18,0.72) 0%, rgba(24,24,24,0.38) 60%, rgba(30,30,30,0.62) 100%), radial-gradient(ellipse at 50% 38%, rgba(0,0,0,0.09) 60%, rgba(0,0,0,0.28) 100%), url(${heroImage}) center center / cover no-repeat`,
+        background: `linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.44) 54%, rgba(0,0,0,0.74) 100%), radial-gradient(ellipse at 50% 38%, rgba(0,0,0,0.07) 58%, rgba(0,0,0,0.24) 100%), url(${heroImage}) center center / cover no-repeat`,
         width: '100%',
         minHeight: '100vh',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        filter: 'brightness(1.18) contrast(1.13) saturate(1.04)'
+        filter: 'brightness(1.03) contrast(1.08) saturate(1.02)'
       }}
     >
 
@@ -33,8 +33,8 @@ export default function HeroSection() {
 
       <div className="hero-content relative z-10 w-full text-center flex flex-col items-center justify-center" style={{left: 0, right: 0, position: 'relative'}}>
 
-        {/* Logo and Brand Name above gold line */}
-        <div className="hero-logo-row mb-1 mt-[-2.1rem]">
+        {/* Logo and Brand Name above heading */}
+        <div className="hero-logo-row mb-1">
           <img src={logo} alt="Logo" style={{ height: '2.8rem', width: '2.8rem', minWidth: '2.8rem', minHeight: '2.8rem', objectFit: 'cover', borderRadius: '0.4em' }} />
           <span className="hero-brand-name">
             <span className="hero-brand-gold-gradient">XTREME</span>
@@ -48,45 +48,51 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.8 }}
-          className="hero-heading mb-7 text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-[4rem] break-words max-w-full"
+          className="hero-heading mb-[18px] break-words max-w-full"
           style={{
-            fontFamily: "'Playfair Display Variable', 'Georgia', 'Times New Roman', serif",
-            fontWeight: 700,
-            lineHeight: 1.08,
-            letterSpacing: '0.01em',
-            color: '#fff',
+            fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+            fontWeight: 500,
+            lineHeight: 1.1,
+            letterSpacing: '0.3px',
+            color: '#f5f5f5',
             textAlign: 'center',
-            textShadow: '0 4px 18px rgba(0,0,0,0.22)',
+            textShadow: '0 2px 6px rgba(0,0,0,0.7), 0 0 2px rgba(255,255,255,0.1)',
+            textRendering: 'optimizeLegibility',
             WebkitFontSmoothing: 'antialiased',
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
             <span
-              className="block font-bold text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-[4rem] leading-tight opacity-90"
+              className="block"
               style={{
+                fontSize: 'clamp(2rem, 6.2vw, 50px)',
                 color: '#fff',
                 background: 'none',
                 WebkitBackgroundClip: 'initial',
                 WebkitTextFillColor: 'initial',
-                fontWeight: 700,
-                lineHeight: 1.05,
-                letterSpacing: '0.01em',
+                fontWeight: 500,
+                lineHeight: 1.1,
+                letterSpacing: '0.3px',
                 display: 'block',
-                opacity: 0.88,
+                opacity: 0.98,
+                marginBottom: '6px',
               }}
             >
               Elevate Your
             </span>
             <span
-              className="block font-extrabold text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-[4rem] leading-tight gold"
+              className="block"
               style={{
-                background: 'linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)',
+                fontSize: 'clamp(2.35rem, 7.2vw, 60px)',
+                background: 'linear-gradient(120deg, #d4af37 0%, #f9e27d 30%, #d4af37 55%, #a8872d 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 color: 'transparent',
-                fontWeight: 800,
-                letterSpacing: '0.01em',
+                fontWeight: 600,
+                letterSpacing: '0.3px',
+                lineHeight: 1.1,
                 display: 'block',
+                textShadow: '0 3px 12px rgba(212,175,55,0.25), 0 0 30px rgba(212,175,55,0.1)',
               }}
             >
               Driving Experience
@@ -98,24 +104,26 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="hero-subheading flex flex-row flex-nowrap justify-center items-center gap-2 mb-4 tracking-wide w-full text-sm xs:text-base sm:text-lg md:text-xl break-words max-w-full px-2"
+          className="hero-subheading flex flex-row flex-nowrap justify-center items-center gap-2 mb-[20px] w-full break-words max-w-full px-2"
           style={{
-            fontFamily: "'Playfair Display Variable', 'Georgia', 'Times New Roman', serif",
-            fontWeight: 600,
-            fontSize: '1.1rem',
-            color: '#F7F5EF',
-            letterSpacing: '0.12em',
-            textShadow: '0 2px 8px rgba(0,0,0,0.18)',
-            lineHeight: 1.18,
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 400,
+            fontSize: '20px',
+            color: 'rgba(255,255,255,0.7)',
+            letterSpacing: '0.8px',
+            textShadow: '0 1px 6px rgba(0,0,0,0.25)',
+            lineHeight: 1.2,
             textAlign: 'center',
             width: '100%',
             WebkitFontSmoothing: 'antialiased',
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
-          <span style={{fontFamily: "inherit", fontWeight: 600, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Luxury Detailing</span>
-          <span className="mx-2 text-[#E6C16A]" style={{fontSize: '1.5rem', fontWeight: 700}}>&bull;</span>
-          <span style={{fontFamily: "inherit", fontWeight: 600, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Custom Interiors</span>
+          <span style={{fontFamily: "inherit", fontWeight: 400, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Luxury Detailing</span>
+          <span className="mx-2" style={{fontSize: '1rem', fontWeight: 400, color: 'rgba(255,255,255,0.7)'}}>&bull;</span>
+          <span style={{fontFamily: "inherit", fontWeight: 400, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Paint Protection</span>
+          <span className="mx-2" style={{fontSize: '1rem', fontWeight: 400, color: 'rgba(255,255,255,0.7)'}}>&bull;</span>
+          <span style={{fontFamily: "inherit", fontWeight: 400, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Custom Interiors</span>
         </motion.div>
 
         {/* Supporting line */}
@@ -123,9 +131,9 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="mb-10 mt-2"
+          className="mb-[28px] mt-1"
         >
-          <span className="block font-serif text-[1.1rem] md:text-lg text-[#F7F5EF] opacity-90 tracking-wide" style={{ letterSpacing: "0.12em" }}>
+          <span className="block" style={{fontFamily: "'Playfair Display', serif", fontSize: '20px', color: 'rgba(255,255,255,0.85)', letterSpacing: '0.3px', fontWeight: 500, textShadow: '0 2px 7px rgba(0,0,0,0.38)' }}>
             Precision. Protection. Perfection.
           </span>
         </motion.div>
@@ -135,29 +143,31 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          className="flex justify-center mb-16 mt-2"
+          className="flex justify-center mb-16 mt-1"
         >
           <Link to="/book" className="w-full max-w-xs">
             <button
-              className="hero-btn w-full py-5 px-8 text-lg md:text-xl rounded-xl font-semibold uppercase tracking-wider shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E6C16A] transition-all duration-200"
+              className="hero-btn w-full py-4 px-8 text-[15px] md:text-[15px] rounded-[12px] font-semibold uppercase tracking-[0.08em] shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E6C16A] transition-all duration-300"
               style={{
-                background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
-                color: "#1A1A1A",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
+                background: "linear-gradient(135deg, #d4af37, #f7d774)",
+                color: "#111",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
                 border: "1px solid rgba(255, 215, 120, 0.25)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                boxShadow: "0 8px 25px rgba(212,175,55,0.4), inset 0 1px 1px rgba(255,255,255,0.4)",
                 textShadow: "0 1px 0 rgba(255,255,255,0.18)",
                 position: "relative",
                 overflow: "hidden",
               }}
               onMouseOver={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(to bottom, #F3D37A 0%, #E6C16A 45%, #B8892F 75%, #8F6A24 100%)";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 18px rgba(0,0,0,0.38)";
+                (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #ddba51, #f8df8f)";
+                (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)";
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 12px 35px rgba(212,175,55,0.6)";
               }}
               onMouseOut={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+                (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #d4af37, #f7d774)";
+                (e.currentTarget as HTMLButtonElement).style.transform = "none";
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 25px rgba(212,175,55,0.4), inset 0 1px 1px rgba(255,255,255,0.4)";
               }}
               onMouseDown={e => {
                 (e.currentTarget as HTMLButtonElement).style.transform = "translateY(1px)";

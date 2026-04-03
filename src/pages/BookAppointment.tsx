@@ -45,7 +45,7 @@ const API_URL =
   "https://script.google.com/macros/s/AKfycbyFPeQt10pbrzrVTW9hGOsXsAMKsIjtOXhHN6lQ1iVDWuWy_fO_eeEnQ7IHhL2CY4VS/exec";
 
 const DENT_PRICE = 500;
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 7;
 
 interface Service {
   service_id: string;
@@ -133,8 +133,6 @@ const INITIAL_STATE: BookingWizardState = {
 const STEP_TITLES = [
   "Select Vehicle",
   "Choose Service",
-  "Dent Count",
-  "Add-ons",
   "Select Date",
   "Select Time",
   "Customer Details",
@@ -458,16 +456,12 @@ export default function BookAppointment() {
         case 2:
           return state.services.length > 0;
         case 3:
-          return state.services.includes("Dent Removal") ? state.dents >= 1 : true;
-        case 4:
-          return true;
-        case 5:
           return Boolean(state.date);
-        case 6:
+        case 4:
           return Boolean(state.timeSlot);
-        case 7:
+        case 5:
           return Boolean(state.customer.name && state.customer.phone && state.customer.email);
-        case 8:
+        case 6:
           return true;
         default:
           return true;
@@ -516,7 +510,7 @@ export default function BookAppointment() {
   }, [state.date]);
 
   useEffect(() => {
-    if (step === 6 && state.date) {
+    if (step === 4 && state.date) {
       void loadSlots();
     }
   }, [step, state.date, loadSlots]);
@@ -545,7 +539,7 @@ export default function BookAppointment() {
   }, [state.addons, state.dents, state.services, state.vehicleType]);
 
   useEffect(() => {
-    if (step === 8) {
+    if (step === 6) {
       void loadPrice();
     }
   }, [step, loadPrice]);
@@ -556,15 +550,15 @@ export default function BookAppointment() {
       return;
     }
 
-    if (step === 8) {
+    if (step === 6) {
       setSubmitting(true);
       setConfirmError(null);
 
       const payload = {
         service: state.services.join(", "),
         vehicleType: state.vehicleType || "",
-        dents: state.dents,
-        addons: state.addons.join(","),
+        dents: 0,
+        addons: "",
         date: state.date || "",
         timeSlot: state.timeSlot || "",
         customerName: state.customer.name,
@@ -587,7 +581,7 @@ export default function BookAppointment() {
         const message = String(result.error || "Something went wrong while booking.");
         setConfirmError(message);
         toast.error(message);
-        setStep(9);
+        setStep(7);
         return;
       }
 
@@ -599,7 +593,7 @@ export default function BookAppointment() {
         toast.warning("Booking created, but confirmation email was not sent. Please contact support.");
       }
 
-      setStep(9);
+      setStep(7);
       return;
     }
 
@@ -686,7 +680,7 @@ export default function BookAppointment() {
                   transition={{ duration: 0.4 }}
                 />
               </div>
-              <div className="grid grid-cols-9 gap-2 mt-4">
+              <div className="grid gap-2 mt-4" style={{ gridTemplateColumns: `repeat(${TOTAL_STEPS}, minmax(0, 1fr))` }}>
                 {Array.from({ length: TOTAL_STEPS }).map((_, idx) => {
                   const point = idx + 1;
                   const done = point < step;
@@ -781,98 +775,6 @@ export default function BookAppointment() {
                 {step === 3 && (
                   <div>
                     <p className="font-heading font-semibold mb-4 flex items-center gap-2">
-                      <Wrench className="h-4 w-4 text-primary" /> Number of Dents
-                    </p>
-                    {state.services.includes("Dent Removal") ? (
-                      <div className="bg-secondary/60 rounded-xl border border-border p-5">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-heading font-semibold">Dent count</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              className="h-10 w-10 rounded-lg border border-border bg-secondary flex items-center justify-center"
-                              onClick={() => setState((prev) => ({ ...prev, dents: Math.max(1, prev.dents - 1) }))}
-                            >
-                              <Minus className="h-4 w-4" />
-                            </button>
-                            <input
-                              type="number"
-                              min={1}
-                              max={50}
-                              value={Math.max(1, state.dents)}
-                              onChange={(e) => {
-                                const value = Math.max(1, Math.min(50, parseInt(e.target.value || "1", 10) || 1));
-                                setState((prev) => ({ ...prev, dents: value }));
-                              }}
-                              className="w-16 text-center rounded-lg border border-border bg-secondary px-2 py-2"
-                            />
-                            <button
-                              type="button"
-                              className="h-10 w-10 rounded-lg border border-border bg-secondary flex items-center justify-center"
-                              onClick={() => setState((prev) => ({ ...prev, dents: Math.min(50, Math.max(1, prev.dents) + 1) }))}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="bg-secondary/60 rounded-xl border border-border p-5">
-                        <p className="font-heading font-semibold">No dent input needed</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          You did not select Dent Removal. This step is shown for flow consistency, and you can continue.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {step === 4 && (
-                  <div>
-                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-primary" /> Optional Add-ons
-                    </p>
-                    <div className="space-y-2">
-                      {addons.map((addon) => {
-                        const selected = state.addons.includes(addon.addon_name);
-                        const Icon = addonIcons[addon.addon_name] || Circle;
-                        return (
-                          <button
-                            key={addon.addon_id}
-                            type="button"
-                            className={`w-full rounded-xl border px-4 py-3 flex items-center justify-between transition-colors ${
-                              selected ? "border-primary bg-primary/10" : "border-border bg-secondary/60 hover:border-primary/40"
-                            }`}
-                            onClick={() => {
-                              setState((prev) => {
-                                const has = prev.addons.includes(addon.addon_name);
-                                return {
-                                  ...prev,
-                                  addons: has
-                                    ? prev.addons.filter((name) => name !== addon.addon_name)
-                                    : [...prev.addons, addon.addon_name],
-                                };
-                              });
-                            }}
-                          >
-                            <div className="flex items-center gap-3">
-                              <Icon className={`h-4 w-4 ${selected ? "text-primary" : "text-muted-foreground"}`} />
-                              <span className="text-sm font-medium">{addon.addon_name}</span>
-                            </div>
-                            {/* Price removed as per requirements */}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {state.addons.length === 0 && <p className="text-xs text-muted-foreground mt-2">No add-ons selected.</p>}
-                  </div>
-                )}
-
-                {step === 5 && (
-                  <div>
-                    <p className="font-heading font-semibold mb-4 flex items-center gap-2">
                       <CalendarDays className="h-4 w-4 text-primary" /> Select Date
                     </p>
                     <input
@@ -888,7 +790,7 @@ export default function BookAppointment() {
                   </div>
                 )}
 
-                {step === 6 && (
+                {step === 4 && (
                   <div>
                     <p className="font-heading font-semibold mb-4 flex items-center gap-2">
                       <Clock className="h-4 w-4 text-primary" /> Select Time Slot
@@ -925,7 +827,7 @@ export default function BookAppointment() {
                   </div>
                 )}
 
-                {step === 7 && (
+                {step === 5 && (
                   <div className="space-y-4">
                     <p className="font-heading font-semibold flex items-center gap-2">
                       <User className="h-4 w-4 text-primary" /> Customer Details
@@ -991,7 +893,7 @@ export default function BookAppointment() {
                   </div>
                 )}
 
-                {step === 8 && (
+                {step === 6 && (
                   <div>
                     <p className="font-heading font-semibold mb-4 flex items-center gap-2">
                       <Tag className="h-4 w-4 text-primary" /> Review & Confirm
@@ -1018,18 +920,6 @@ export default function BookAppointment() {
                             <span className="text-muted-foreground">Vehicle</span>
                             <span>{state.vehicleType}</span>
                           </div>
-                          {state.dents > 0 && (
-                            <div className="flex justify-between gap-4">
-                              <span className="text-muted-foreground">Dents</span>
-                              <span>{state.dents}</span>
-                            </div>
-                          )}
-                          {state.addons.length > 0 && (
-                            <div className="flex justify-between gap-4">
-                              <span className="text-muted-foreground">Add-ons</span>
-                              <span>{state.addons.join(", ")}</span>
-                            </div>
-                          )}
                           <div className="flex justify-between gap-4">
                             <span className="text-muted-foreground">Date</span>
                             <span>{formatDisplayDate(state.date)}</span>
@@ -1048,7 +938,7 @@ export default function BookAppointment() {
                   </div>
                 )}
 
-                {step === 9 && (
+                {step === 7 && (
                   <div className="text-center py-6">
                     {confirmation && !confirmError ? (
                       <>
@@ -1086,14 +976,14 @@ export default function BookAppointment() {
             </AnimatePresence>
 
             <div className="mt-8 flex items-center justify-between gap-3">
-              {step < 9 ? (
+              {step < 7 ? (
                 <>
                   <Button type="button" variant="outline" onClick={goBack} disabled={step === 1}>
                     <ChevronLeft className="h-4 w-4 mr-1" /> Back
                   </Button>
                   <Button
                     type="button"
-                    variant={step === 8 ? "gold" : "default"}
+                    variant={step === 6 ? "gold" : "default"}
                     onClick={() => void goNext()}
                     disabled={!isStepValid(step) || submitting || loadingPrice}
                   >
@@ -1101,7 +991,7 @@ export default function BookAppointment() {
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...
                       </>
-                    ) : step === 8 ? (
+                    ) : step === 6 ? (
                       "Confirm Booking"
                     ) : (
                       <>
