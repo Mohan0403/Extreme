@@ -1,11 +1,17 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Droplets, Shield, Paintbrush, Camera, Wrench, Sparkles, Car, CirclePlay } from "lucide-react";
+import { CirclePlay } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getServiceVideo } from "@/lib/serviceVideos";
 
+type Service = {
+  title: string;
+  description: string;
+  featured?: boolean;
+};
+
 export default function ServicesSection() {
-  const services = [
+  const services: Service[] = [
     {
       title: "Business Class Customisation",
       description: "Step into luxury! Our business class upgrades turn your car into a true executive lounge on wheels.",
@@ -48,29 +54,30 @@ export default function ServicesSection() {
 
   // No borderColors needed, using luxury-gradient-line
 
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const selectedServiceVideo = selectedService ? getServiceVideo(selectedService.title) : {};
 
   return (
-    <section className="py-16 md:py-24 lg:py-32 relative bg-[#191c1f] overflow-x-hidden">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-20" style={{background: 'repeating-linear-gradient(135deg, #23272b 0px, #23272b 2px, transparent 2px, transparent 20px)'}} />
-      <div className="w-full relative z-10">
+    <section className="relative overflow-x-hidden bg-[#13161b] py-16 md:py-24 lg:py-28">
+      <div className="pointer-events-none absolute inset-0 opacity-25" style={{ background: "repeating-linear-gradient(135deg, #21262d 0px, #21262d 2px, transparent 2px, transparent 22px)" }} />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(210,181,106,0.13),rgba(0,0,0,0)_46%)]" />
+
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mb-12 text-center"
+          className="mb-14 text-center"
         >
-          <p className="text-primary font-heading text-sm tracking-[0.3em] uppercase mb-3">What We Offer</p>
-          <h2 className="font-heading text-3xl md:text-5xl font-bold">
+          <p className="mb-3 font-heading text-sm uppercase tracking-[0.32em] text-primary">What We Offer</p>
+          <h2 className="font-heading text-3xl font-bold md:text-5xl">
             Our <span className="text-gradient-gold">Premium Services</span>
           </h2>
+          <div className="mx-auto mt-5 h-px w-40 bg-gradient-to-r from-transparent via-[#d2b56a] to-transparent" />
         </motion.div>
 
-        {/* Horizontal scrollable cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => (
             <motion.div
               key={service.title}
@@ -78,47 +85,40 @@ export default function ServicesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ scale: 1.04 }}
-              className={`relative rounded-2xl bg-card shadow-xl transition-all duration-300 flex flex-col items-center px-6 pt-12 pb-20 min-h-[340px]`}
+              whileHover={{ y: -7 }}
+              className="group relative flex min-h-[370px] flex-col overflow-hidden rounded-[26px] border border-[#d2b56a]/18 bg-[linear-gradient(165deg,rgba(26,31,38,0.96),rgba(17,20,26,0.98))] px-6 pb-7 pt-10 shadow-[0_16px_30px_rgba(0,0,0,0.33)] transition-all duration-300"
             >
-              <div className="absolute left-0 right-0 top-7 z-0 flex items-center justify-center">
-                <div className="luxury-gradient-line" style={{height: '3px', width: '90%'}} />
-              </div>
-              {/* Clear, large number */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center justify-center h-16 w-16 rounded-full bg-yellow-400 text-black font-extrabold text-3xl shadow-lg border-4 border-background select-none z-20" style={{letterSpacing: '0.05em', textShadow: '0 2px 8px #0008'}}>
-                <span className="bg-gradient-gold w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-3xl text-[#18171c] shadow-lg border-2 border-[#bfa76a] z-10" style={{letterSpacing: '0.05em', textShadow: '0 2px 8px #bfa76a88'}}>
-                  {String(i + 1).padStart(2, '0')}
+              <div className="pointer-events-none absolute -top-20 right-[-60px] h-48 w-48 rounded-full bg-[#d2b56a]/10 blur-3xl transition-opacity duration-300 group-hover:opacity-95" />
+
+              <div className="absolute left-6 right-6 top-12 z-0 h-px bg-gradient-to-r from-transparent via-[#d4b76d]/80 to-transparent" />
+              <div className="absolute left-6 right-6 top-12 z-0 h-[1px] bg-white/10 blur-[1px]" />
+
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#ba9850] bg-[linear-gradient(145deg,#f0cf73,#ca9f39)] font-heading text-2xl font-bold text-[#1a1710] shadow-[0_8px_14px_rgba(0,0,0,0.28)]">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
+                {service.featured ? (
+                  <span className="rounded-full border border-[#d9bc76]/45 bg-[#191d24]/80 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-[#f2e1b6]">
+                    Featured
+                  </span>
+                ) : null}
               </div>
-              <h3 className="font-heading text-2xl md:text-3xl font-bold gold mb-2 mt-8 text-center relative z-10" style={{fontFamily: 'Playfair Display Variable, Georgia, serif', letterSpacing: '0.02em', textShadow: '0 2px 8px #0008'}}>{service.title}</h3>
-              <p className="text-white text-base mb-4 leading-relaxed font-medium text-center" style={{fontFamily: 'Arial, sans-serif'}}>{service.description}</p>
+
+              <h3 className="relative z-10 mt-7 text-center font-heading text-3xl font-bold leading-tight text-gradient-gold">
+                {service.title}
+              </h3>
+
+              <p className="relative z-10 mt-4 text-center text-lg font-medium leading-relaxed text-[#e8e8e8]">
+                {service.description}
+              </p>
+
               <button
                 type="button"
                 onClick={() => setSelectedService(service)}
-                className="absolute left-1/2 -translate-x-1/2 bottom-4 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold px-7 py-2 md:px-8 md:py-2.5 text-base font-heading font-semibold uppercase tracking-wide text-[#18171c] shadow-lg hover:scale-105 transition-all border-none focus:outline-none focus:ring-2 focus:ring-gold watch-video-demo-btn"
-                style={{
-                  letterSpacing: '0.04em',
-                  textShadow: '0 1px 2px #fff8e1cc',
-                  minWidth: '150px',
-                  minHeight: '38px',
-                  paddingTop: '0.5em',
-                  paddingBottom: '0.5em',
-                  paddingLeft: '1.5em',
-                  paddingRight: '1.5em',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  borderRadius: '2em',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.22)',
-                  border: '1px solid rgba(255, 215, 120, 0.25)',
-                  transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
-                  width: 'auto',
-                  height: 'auto',
-                  lineHeight: 1.2,
-                  whiteSpace: 'normal',
-                  textAlign: 'center',
-                }}
+                className="relative z-10 mt-auto inline-flex items-center justify-center gap-2 self-center rounded-full border border-[#e8c97f]/35 bg-[linear-gradient(135deg,#e8c467,#cb9f3d)] px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-[#17120a] shadow-[0_8px_20px_rgba(0,0,0,0.26)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#e0c06d]"
               >
-                <span className="watch-video-demo-text">WATCH VIDEO<br/>DEMO</span>
+                <CirclePlay className="h-4 w-4" />
+                Watch Video Demo
               </button>
             </motion.div>
           ))}

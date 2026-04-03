@@ -1,26 +1,25 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Phone, Star, Smile, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.jpeg";
 
 
 // Use the most premium, cinematic black car image available
 const heroImage = "/images/hero-slider/hero.jpeg";
+const heroServices = ["Luxury Detailing", "Paint Protection", "Custom Interiors"];
 
 
 export default function HeroSection() {
   return (
     <section
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-16 font-sans"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-20"
       style={{
-        background: `linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.44) 54%, rgba(0,0,0,0.74) 100%), radial-gradient(ellipse at 50% 38%, rgba(0,0,0,0.07) 58%, rgba(0,0,0,0.24) 100%), url(${heroImage}) center center / cover no-repeat`,
+        background: `linear-gradient(180deg, rgba(6,7,10,0.82) 0%, rgba(9,10,14,0.62) 45%, rgba(4,4,6,0.9) 100%), radial-gradient(circle at 60% 38%, rgba(255,215,130,0.06) 0%, rgba(0,0,0,0) 28%), url(${heroImage}) center center / cover no-repeat`,
         width: '100%',
         minHeight: '100vh',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        filter: 'brightness(1.03) contrast(1.08) saturate(1.02)'
+        filter: 'brightness(0.87) contrast(1.08) saturate(1.03)'
       }}
     >
 
@@ -31,11 +30,27 @@ export default function HeroSection() {
       {/* (Removed old gold line; using only the new luxury gradient line above heading) */}
 
 
-      <div className="hero-content relative z-10 w-full text-center flex flex-col items-center justify-center" style={{left: 0, right: 0, position: 'relative'}}>
+      <div className="hero-content relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center justify-center px-4 text-center sm:px-8">
+
+        <div className="absolute inset-x-6 top-1/2 -z-10 h-[360px] -translate-y-1/2 rounded-[40px] bg-[radial-gradient(circle_at_50%_40%,rgba(255,236,184,0.08),rgba(0,0,0,0)_60%)] blur-2xl" />
 
         {/* Logo and Brand Name above heading */}
-        <div className="hero-logo-row mb-1">
-          <img src={logo} alt="Logo" style={{ height: '2.8rem', width: '2.8rem', minWidth: '2.8rem', minHeight: '2.8rem', objectFit: 'cover', borderRadius: '0.4em' }} />
+        <div className="hero-logo-row mb-5 rounded-2xl border border-[#e3bf67]/25 bg-black/25 px-4 py-2 backdrop-blur-sm">
+          <span style={{ height: '2.8rem', width: '2.8rem', minWidth: '2.8rem', minHeight: '2.8rem', borderRadius: '50%', overflow: 'hidden', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src={logo}
+              alt="Logo"
+              style={{
+                height: '2.8rem',
+                width: '2.8rem',
+                minWidth: '2.8rem',
+                minHeight: '2.8rem',
+                objectFit: 'cover',
+                transform: 'scale(1.28)',
+                transformOrigin: 'center'
+              }}
+            />
+          </span>
           <span className="hero-brand-name">
             <span className="hero-brand-gold-gradient">XTREME</span>
             <span className="hero-brand-white"> CAR </span>
@@ -48,15 +63,15 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.8 }}
-          className="hero-heading mb-[18px] break-words max-w-full"
+          className="hero-heading mb-5 max-w-full break-words"
           style={{
-            fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
-            fontWeight: 500,
-            lineHeight: 1.1,
-            letterSpacing: '0.3px',
+            fontFamily: "'Bodoni Moda', 'Cormorant Garamond', serif",
+            fontWeight: 700,
+            lineHeight: 0.95,
+            letterSpacing: '-0.02em',
             color: '#f5f5f5',
             textAlign: 'center',
-            textShadow: '0 2px 6px rgba(0,0,0,0.7), 0 0 2px rgba(255,255,255,0.1)',
+            textShadow: '0 2px 10px rgba(0,0,0,0.6), 0 0 2px rgba(255,255,255,0.08)',
             textRendering: 'optimizeLegibility',
             WebkitFontSmoothing: 'antialiased',
             MozOsxFontSmoothing: 'grayscale',
@@ -65,17 +80,17 @@ export default function HeroSection() {
             <span
               className="block"
               style={{
-                fontSize: 'clamp(2rem, 6.2vw, 50px)',
+                fontSize: 'clamp(2rem, 5.6vw, 52px)',
                 color: '#fff',
                 background: 'none',
                 WebkitBackgroundClip: 'initial',
                 WebkitTextFillColor: 'initial',
                 fontWeight: 500,
-                lineHeight: 1.1,
-                letterSpacing: '0.3px',
+                lineHeight: 0.95,
+                letterSpacing: '-0.015em',
                 display: 'block',
                 opacity: 0.98,
-                marginBottom: '6px',
+                marginBottom: '4px',
               }}
             >
               Elevate Your
@@ -83,16 +98,17 @@ export default function HeroSection() {
             <span
               className="block"
               style={{
-                fontSize: 'clamp(2.35rem, 7.2vw, 60px)',
-                background: 'linear-gradient(120deg, #d4af37 0%, #f9e27d 30%, #d4af37 55%, #a8872d 100%)',
+                fontSize: 'clamp(2.35rem, 6.7vw, 64px)',
+                background: 'linear-gradient(120deg, #d6af44 0%, #f9e7a3 30%, #d7af45 56%, #a87f2f 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 color: 'transparent',
-                fontWeight: 600,
-                letterSpacing: '0.3px',
-                lineHeight: 1.1,
+                fontFamily: "'DM Serif Display', 'Bodoni Moda', serif",
+                fontWeight: 400,
+                letterSpacing: '0.01em',
+                lineHeight: 0.92,
                 display: 'block',
-                textShadow: '0 3px 12px rgba(212,175,55,0.25), 0 0 30px rgba(212,175,55,0.1)',
+                textShadow: '0 6px 16px rgba(212,175,55,0.2), 0 0 30px rgba(212,175,55,0.12)',
               }}
             >
               Driving Experience
@@ -104,14 +120,14 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="hero-subheading flex flex-row flex-nowrap justify-center items-center gap-2 mb-[20px] w-full break-words max-w-full px-2"
+          className="hero-subheading mb-6 flex w-full max-w-full flex-nowrap items-center justify-start gap-1 overflow-x-auto px-1 sm:justify-center sm:gap-2 sm:px-2"
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontWeight: 400,
-            fontSize: '20px',
-            color: 'rgba(255,255,255,0.7)',
-            letterSpacing: '0.8px',
-            textShadow: '0 1px 6px rgba(0,0,0,0.25)',
+            fontWeight: 600,
+            fontSize: 'clamp(0.9rem, 1.5vw, 1.08rem)',
+            color: 'rgba(245,241,232,0.9)',
+            letterSpacing: '0.45px',
+            textShadow: '0 1px 8px rgba(0,0,0,0.35)',
             lineHeight: 1.2,
             textAlign: 'center',
             width: '100%',
@@ -119,11 +135,16 @@ export default function HeroSection() {
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
-          <span style={{fontFamily: "inherit", fontWeight: 400, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Luxury Detailing</span>
-          <span className="mx-2" style={{fontSize: '1rem', fontWeight: 400, color: 'rgba(255,255,255,0.7)'}}>&bull;</span>
-          <span style={{fontFamily: "inherit", fontWeight: 400, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Paint Protection</span>
-          <span className="mx-2" style={{fontSize: '1rem', fontWeight: 400, color: 'rgba(255,255,255,0.7)'}}>&bull;</span>
-          <span style={{fontFamily: "inherit", fontWeight: 400, fontSize: 'inherit', letterSpacing: 'inherit', color: 'inherit'}}>Custom Interiors</span>
+          {heroServices.map((service, index) => (
+            <div key={service} className="flex shrink-0 items-center gap-1 sm:gap-2">
+              <span className="whitespace-nowrap rounded-full border border-[#e4bf67]/30 bg-black/35 px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.11em] text-[#f1ebdb] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm sm:px-4 sm:text-[0.78rem]">
+                {service}
+              </span>
+              {index < heroServices.length - 1 ? (
+                <span className="text-[#e1bf67] text-[0.8rem] leading-none">✦</span>
+              ) : null}
+            </div>
+          ))}
         </motion.div>
 
         {/* Supporting line */}
@@ -131,11 +152,15 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="mb-[28px] mt-1"
+          className="mb-8 mt-0"
         >
-          <span className="block" style={{fontFamily: "'Playfair Display', serif", fontSize: '20px', color: 'rgba(255,255,255,0.85)', letterSpacing: '0.3px', fontWeight: 500, textShadow: '0 2px 7px rgba(0,0,0,0.38)' }}>
-            Precision. Protection. Perfection.
-          </span>
+          <div className="inline-flex items-center gap-3 rounded-full border border-[#e2c16a]/35 bg-black/30 px-5 py-2.5 shadow-[0_10px_20px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+            <span className="h-px w-7 bg-gradient-to-r from-transparent to-[#e2c16a]/80" />
+            <span className="block" style={{fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)', color: 'rgba(247,241,226,0.95)', letterSpacing: '0.4px', fontWeight: 700, textShadow: '0 2px 9px rgba(0,0,0,0.42)' }}>
+              Precision. Protection. Perfection.
+            </span>
+            <span className="h-px w-7 bg-gradient-to-l from-transparent to-[#e2c16a]/80" />
+          </div>
         </motion.div>
 
         {/* CTA Button */}
@@ -143,40 +168,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          className="flex justify-center mb-16 mt-1"
+          className="mb-16 mt-1 flex justify-center"
         >
           <Link to="/book" className="w-full max-w-xs">
             <button
-              className="hero-btn w-full py-4 px-8 text-[15px] md:text-[15px] rounded-[12px] font-semibold uppercase tracking-[0.08em] shadow-lg focus:outline-none focus:ring-2 focus:ring-[#E6C16A] transition-all duration-300"
-              style={{
-                background: "linear-gradient(135deg, #d4af37, #f7d774)",
-                color: "#111",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                border: "1px solid rgba(255, 215, 120, 0.25)",
-                boxShadow: "0 8px 25px rgba(212,175,55,0.4), inset 0 1px 1px rgba(255,255,255,0.4)",
-                textShadow: "0 1px 0 rgba(255,255,255,0.18)",
-                position: "relative",
-                overflow: "hidden",
-              }}
-              onMouseOver={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #ddba51, #f8df8f)";
-                (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 12px 35px rgba(212,175,55,0.6)";
-              }}
-              onMouseOut={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #d4af37, #f7d774)";
-                (e.currentTarget as HTMLButtonElement).style.transform = "none";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 25px rgba(212,175,55,0.4), inset 0 1px 1px rgba(255,255,255,0.4)";
-              }}
-              onMouseDown={e => {
-                (e.currentTarget as HTMLButtonElement).style.transform = "translateY(1px)";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 2px 6px rgba(0,0,0,0.22)";
-              }}
-              onMouseUp={e => {
-                (e.currentTarget as HTMLButtonElement).style.transform = "none";
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 18px rgba(0,0,0,0.38)";
-              }}
+              className="hero-btn relative w-full overflow-hidden rounded-[14px] border border-[#f1d487]/35 bg-[linear-gradient(135deg,#d6ad46,#f4d882_50%,#d1a541)] px-8 py-4 text-[15px] font-semibold uppercase tracking-[0.08em] text-[#19150f] shadow-[0_10px_26px_rgba(212,175,55,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_14px_30px_rgba(212,175,55,0.45)] focus:outline-none focus:ring-2 focus:ring-[#E6C16A]"
             >
               BOOK APPOINTMENT
               <span
@@ -186,12 +182,12 @@ export default function HeroSection() {
                   left: 0,
                   top: 0,
                   width: "100%",
-                  height: "40%",
-                  background: "linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(255,255,255,0))",
+                  height: "44%",
+                  background: "linear-gradient(to bottom, rgba(255,255,255,0.26), rgba(255,255,255,0))",
                   borderRadius: "inherit",
                   pointerEvents: "none",
                   zIndex: 1,
-                  opacity: 0.7,
+                  opacity: 0.9,
                 }}
                 aria-hidden="true"
               />
@@ -204,9 +200,9 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
-          className="hero-stats mt-2 flex flex-row flex-wrap items-center justify-center gap-x-2 sm:gap-x-6 w-full break-words max-w-full px-2"
+          className="hero-stats mt-2 flex w-full max-w-full flex-row flex-wrap items-center justify-center gap-x-2 break-words px-2 sm:gap-x-6"
         >
-          <div className="flex flex-row items-center justify-center w-full max-w-2xl">
+          <div className="flex w-full max-w-2xl flex-row items-center justify-center rounded-2xl border border-white/10 bg-black/20 px-2 py-3 backdrop-blur-sm">
             <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
               <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
@@ -215,7 +211,7 @@ export default function HeroSection() {
                 letterSpacing: "0.01em",
                 textShadow: "0 1px 4px #00000044"
               }}>4.8★</p>
-              <p className="text-sm md:text-base text-[#e2decf] mt-1 tracking-wide font-sans">Google Rating</p>
+              <p className="mt-1 font-sans text-sm tracking-wide text-[#e2decf] md:text-base">Google Rating</p>
             </div>
             <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55] hidden sm:block" />
             <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
@@ -226,7 +222,7 @@ export default function HeroSection() {
                 letterSpacing: "0.01em",
                 textShadow: "0 1px 4px #00000044"
               }}>1000+</p>
-              <p className="text-sm md:text-base text-[#e2decf] mt-1 tracking-wide font-sans">Cars Transformed</p>
+              <p className="mt-1 font-sans text-sm tracking-wide text-[#e2decf] md:text-base">Cars Transformed</p>
             </div>
             <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55] hidden sm:block" />
             <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
@@ -237,7 +233,7 @@ export default function HeroSection() {
                 letterSpacing: "0.01em",
                 textShadow: "0 1px 4px #00000044"
               }}>1M+</p>
-              <p className="text-sm md:text-base text-[#e2decf] mt-1 tracking-wide font-sans">Happy Clients</p>
+              <p className="mt-1 font-sans text-sm tracking-wide text-[#e2decf] md:text-base">Happy Clients</p>
             </div>
           </div>
         </motion.div>
@@ -247,7 +243,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4, duration: 0.8 }}
-          className="mt-10 flex justify-center"
+          className="mt-9 flex justify-center"
         >
           <span className="italic text-[#F7F5EF] text-base md:text-lg tracking-wider flex items-center gap-2 font-serif" style={{ opacity: 0.92 }}>
             <span className="inline-block w-10 h-px bg-gradient-to-r from-[#E6C16A] to-transparent"></span>
