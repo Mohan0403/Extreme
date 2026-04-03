@@ -3,6 +3,24 @@ import { Star } from "lucide-react";
 
 const reviews = [
   {
+    name: "Leela Ram",
+    rating: 5,
+    text: "Got PPF done for my Virtus GT at Xtreme Car Care, and I’m really happy with the experience. The team was professional, explained everything clearly, and the quality of the work is excellent. The finish looks perfect and they took great care of the car. They were very transparent throughout the process and kept me updated at each stage of their work. Would definitely recommend them to anyone looking for PPF or detailing work!",
+    service: "PPF Installation",
+  },
+  {
+    name: "Karthik R.",
+    rating: 5,
+    text: "Best car detailing service in Chennai. The PPF application was perfect with no bubbles.",
+    service: "PPF Installation",
+  },
+  {
+    name: "Shrivathsan Raguraman",
+    rating: 5,
+    text: "I usually don't write many reviews, but this service truly deserves one. Extreme Car Care lives up to its name, providing exceptional care for vehicles. I particularly want to commend Mr. Srinivas, who attentively listened to all my requirements and ensured my car looked fantastic. As the saying goes, \"trust the process,\" and I'm glad I did. Each upgrade was exciting, and their attention to detail is impressive. They are definitely worth entrusting with your car's care.",
+    service: "Premium Detailing",
+  },
+  {
     name: "Rajesh K.",
     rating: 5,
     text: "Excellent car wash service and great coordination. My car looks brand new after the ceramic coating!",
@@ -19,12 +37,6 @@ const reviews = [
     rating: 5,
     text: "Fantastic detailing and premium service. They installed a 360° camera and it works flawlessly.",
     service: "360° Camera",
-  },
-  {
-    name: "Karthik R.",
-    rating: 5,
-    text: "Best car detailing service in Chennai. The PPF application was perfect with no bubbles.",
-    service: "PPF Installation",
   },
   {
     name: "Sneha V.",
