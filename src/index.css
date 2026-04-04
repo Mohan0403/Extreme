@@ -9,7 +9,7 @@
   margin-left: auto;
   margin-right: auto;
 }
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -44,7 +44,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
     background: #0B0B0B;
     color: #EAEAEA;
     min-height: 100vh;
@@ -52,7 +52,7 @@
     overflow-x: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-family: 'Cinzel', 'Cormorant Garamond', 'Times New Roman', serif !important;
     font-weight: 700 !important;
     letter-spacing: 0.04em !important;
     background: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
@@ -68,7 +68,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-family: 'Cinzel', 'Cormorant Garamond', 'Times New Roman', serif !important;
     font-weight: 700 !important;
   }
   .bg-gold, .gold-bg {
@@ -94,7 +94,7 @@
     border-radius: 12px;
     padding: 16px 40px;
     font-size: 1.15rem;
-    font-family: 'Playfair Display Variable', Georgia, serif;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
     font-weight: 700;
     box-shadow: 0 6px 32px 0 #B8892F33, 0 1.5px 6px 0 #00000022;
     cursor: pointer;
@@ -110,7 +110,7 @@
     color: #E6C16A !important;
     border-radius: 12px;
     padding: 16px 40px;
-    font-family: 'Playfair Display Variable', Georgia, serif;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
     font-weight: 700;
   }
   .hero-content h1 {
@@ -155,7 +155,7 @@
     letter-spacing: 2px;
     text-align: center;
     padding: 20px;
-    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-family: 'Cinzel', 'Cormorant Garamond', 'Times New Roman', serif !important;
     font-weight: 700 !important;
   }
     --sidebar-primary: 51 100% 50%;
@@ -174,13 +174,19 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif !important;
   }
   body {
     @apply bg-background text-foreground;
-    font-family: Arial, sans-serif;
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif !important;
+  }
+  .font-sans,
+  .font-heading,
+  .font-serif {
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif !important;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif;
+    font-family: 'Cinzel', 'Cormorant Garamond', 'Times New Roman', serif !important;
     font-weight: 600;
     color: #bfa76a;
     letter-spacing: 0.04em;
@@ -192,7 +198,7 @@
   .text-gradient-gold {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(90deg, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%);
-    font-family: 'Playfair Display Variable', 'Georgia', 'Times New Roman', serif !important;
+    font-family: 'Cinzel', 'Cormorant Garamond', 'Times New Roman', serif !important;
     font-weight: 700 !important;
   }
   .bg-gradient-gold {

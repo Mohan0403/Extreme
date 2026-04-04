@@ -13,6 +13,7 @@ export default function HeroSection() {
     <section
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-20"
       style={{
+        fontFamily: "'Cormorant Garamond', 'Times New Roman', serif",
         background: `linear-gradient(180deg, rgba(6,7,10,0.82) 0%, rgba(9,10,14,0.62) 45%, rgba(4,4,6,0.9) 100%), radial-gradient(circle at 60% 38%, rgba(255,215,130,0.06) 0%, rgba(0,0,0,0) 28%), url(${heroImage}) center center / cover no-repeat`,
         width: '100%',
         minHeight: '100vh',
@@ -65,7 +66,7 @@ export default function HeroSection() {
           transition={{ delay: 0.7, duration: 0.8 }}
           className="hero-heading mb-5 max-w-full break-words"
           style={{
-            fontFamily: "'Bodoni Moda', 'Cormorant Garamond', serif",
+            fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
             fontWeight: 700,
             lineHeight: 0.95,
             letterSpacing: '-0.02em',
@@ -103,7 +104,7 @@ export default function HeroSection() {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 color: 'transparent',
-                fontFamily: "'DM Serif Display', 'Bodoni Moda', serif",
+                fontFamily: "'Cinzel', 'Cormorant Garamond', serif",
                 fontWeight: 400,
                 letterSpacing: '0.01em',
                 lineHeight: 0.92,
@@ -122,7 +123,7 @@ export default function HeroSection() {
           transition={{ delay: 0.8, duration: 0.8 }}
           className="hero-subheading mb-6 flex w-full max-w-full flex-nowrap items-center justify-start gap-1 overflow-x-auto px-1 sm:justify-center sm:gap-2 sm:px-2"
           style={{
-            fontFamily: "'Inter', sans-serif",
+            fontFamily: 'inherit',
             fontWeight: 600,
             fontSize: 'clamp(0.9rem, 1.5vw, 1.08rem)',
             color: 'rgba(245,241,232,0.9)',
@@ -156,7 +157,7 @@ export default function HeroSection() {
         >
           <div className="inline-flex items-center gap-3 rounded-full border border-[#e2c16a]/35 bg-black/30 px-5 py-2.5 shadow-[0_10px_20px_rgba(0,0,0,0.25)] backdrop-blur-sm">
             <span className="h-px w-7 bg-gradient-to-r from-transparent to-[#e2c16a]/80" />
-            <span className="block" style={{fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)', color: 'rgba(247,241,226,0.95)', letterSpacing: '0.4px', fontWeight: 700, textShadow: '0 2px 9px rgba(0,0,0,0.42)' }}>
+            <span className="block" style={{fontFamily: 'inherit', fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)', color: 'rgba(247,241,226,0.95)', letterSpacing: '0.4px', fontWeight: 700, textShadow: '0 2px 9px rgba(0,0,0,0.42)' }}>
               Precision. Protection. Perfection.
             </span>
             <span className="h-px w-7 bg-gradient-to-l from-transparent to-[#e2c16a]/80" />
@@ -173,6 +174,7 @@ export default function HeroSection() {
           <Link to="/book" className="w-full max-w-xs">
             <button
               className="hero-btn relative w-full overflow-hidden rounded-[14px] border border-[#f1d487]/35 bg-[linear-gradient(135deg,#d6ad46,#f4d882_50%,#d1a541)] px-8 py-4 text-[15px] font-semibold uppercase tracking-[0.08em] text-[#19150f] shadow-[0_10px_26px_rgba(212,175,55,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_14px_30px_rgba(212,175,55,0.45)] focus:outline-none focus:ring-2 focus:ring-[#E6C16A]"
+              style={{ fontFamily: 'inherit' }}
             >
               BOOK APPOINTMENT
               <span
@@ -204,36 +206,39 @@ export default function HeroSection() {
         >
           <div className="flex w-full max-w-2xl flex-row items-center justify-center rounded-2xl border border-white/10 bg-black/20 px-2 py-3 backdrop-blur-sm">
             <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
-              <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
+              <p className="text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
+                fontFamily: 'inherit',
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 letterSpacing: "0.01em",
                 textShadow: "0 1px 4px #00000044"
               }}>4.8★</p>
-              <p className="mt-1 font-sans text-sm tracking-wide text-[#e2decf] md:text-base">Google Rating</p>
+              <p className="mt-1 text-sm tracking-wide text-[#e2decf] md:text-base" style={{ fontFamily: 'inherit' }}>Google Rating</p>
             </div>
             <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55] hidden sm:block" />
             <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
-              <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
+              <p className="text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
+                fontFamily: 'inherit',
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 letterSpacing: "0.01em",
                 textShadow: "0 1px 4px #00000044"
               }}>1000+</p>
-              <p className="mt-1 font-sans text-sm tracking-wide text-[#e2decf] md:text-base">Cars Transformed</p>
+              <p className="mt-1 text-sm tracking-wide text-[#e2decf] md:text-base" style={{ fontFamily: 'inherit' }}>Cars Transformed</p>
             </div>
             <div className="h-10 w-px mx-2 md:mx-6 bg-gradient-to-b from-[#E6C16A99] to-[#B8892F55] hidden sm:block" />
             <div className="hero-stat flex-1 text-center px-2 min-w-[90px] sm:min-w-[110px]">
-              <p className="font-serif text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
+              <p className="text-lg xs:text-xl sm:text-2xl md:text-4xl lg:text-5xl font-semibold" style={{
+                fontFamily: 'inherit',
                 background: "linear-gradient(to bottom, #E6C16A 0%, #D4A94A 45%, #B8892F 75%, #8F6A24 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 letterSpacing: "0.01em",
                 textShadow: "0 1px 4px #00000044"
               }}>1M+</p>
-              <p className="mt-1 font-sans text-sm tracking-wide text-[#e2decf] md:text-base">Happy Clients</p>
+              <p className="mt-1 text-sm tracking-wide text-[#e2decf] md:text-base" style={{ fontFamily: 'inherit' }}>Happy Clients</p>
             </div>
           </div>
         </motion.div>
@@ -245,9 +250,9 @@ export default function HeroSection() {
           transition={{ delay: 1.4, duration: 0.8 }}
           className="mt-9 flex justify-center"
         >
-          <span className="italic text-[#F7F5EF] text-base md:text-lg tracking-wider flex items-center gap-2 font-serif" style={{ opacity: 0.92 }}>
+          <span className="italic text-[#F7F5EF] text-base md:text-lg tracking-wider flex items-center gap-2 font-serif" style={{ opacity: 0.92, fontFamily: 'inherit' }}>
             <span className="inline-block w-10 h-px bg-gradient-to-r from-[#E6C16A] to-transparent"></span>
-            <span className="text-[#E6C16A] font-serif font-medium" style={{ fontStyle: "italic", letterSpacing: "0.08em" }}>Over 1 Million Journeys Elevated</span>
+            <span className="text-[#E6C16A] font-serif font-medium" style={{ fontStyle: "italic", letterSpacing: "0.08em", fontFamily: 'inherit' }}>Over 1 Million Journeys Elevated</span>
             <span className="inline-block w-10 h-px bg-gradient-to-l from-[#E6C16A] to-transparent"></span>
           </span>
         </motion.div>

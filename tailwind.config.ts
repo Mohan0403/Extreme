@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ["Georgia", "Times New Roman", "serif"],
-        body: ["Arial", "sans-serif"],
+        heading: ["Cinzel", "Cormorant Garamond", "serif"],
+        body: ["Cormorant Garamond", "Times New Roman", "serif"],
       },
       colors: {
         border: "#23222a",

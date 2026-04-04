@@ -387,8 +387,8 @@ function OptionCard({
       onClick={onClick}
       className={`relative rounded-xl border p-4 text-left transition-all duration-200 ${
         selected
-          ? "border-gradient-gold bg-gradient-gold/10 shadow-[0_0_20px_#bfa76a33]"
-          : "border-border bg-secondary/70 hover:border-gradient-gold/50"
+          ? "border-[#e6c16a]/60 bg-gradient-gold/10 shadow-[0_0_0_1px_rgba(230,193,106,0.2),0_0_20px_#bfa76a33]"
+          : "border-[#e6c16a]/18 bg-secondary/70 hover:border-[#e6c16a]/40"
       }`}
     >
       <div className="flex items-start gap-3">
@@ -670,7 +670,7 @@ export default function BookAppointment() {
             </p>
           </motion.div>
 
-          <div className="glass rounded-2xl p-6 md:p-8 mb-8" onKeyDownCapture={handleWizardKeyDownCapture}>
+          <div className="glass rounded-2xl border border-[#e6c16a]/20 p-6 md:p-8 mb-8 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_16px_40px_rgba(0,0,0,0.18)]" onKeyDownCapture={handleWizardKeyDownCapture}>
             <div className="mb-6">
               <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
                 <motion.div
