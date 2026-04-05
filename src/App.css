@@ -232,17 +232,17 @@
     line-height: 2.3rem !important;
   }
   .hero-subheading {
-    font-size: 1.2rem !important;
+    font-size: 0.95rem !important;
     line-height: 1.25 !important;
     margin-bottom: 1.15rem !important;
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 0.3rem !important;
+    gap: 0.2rem !important;
     white-space: normal !important;
-    overflow-x: visible !important;
+    overflow-x: hidden !important;
     width: 100% !important;
     max-width: 100% !important;
     text-align: center !important;
@@ -260,6 +260,15 @@
   .hero-stat {
     min-width: 110px !important;
     margin-bottom: 0 !important;
+  }
+  .hero-supporting-line > div {
+    gap: 0.5rem !important;
+    padding: 0.45rem 0.7rem !important;
+  }
+  .hero-supporting-text {
+    font-size: 0.92rem !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.18px !important;
   }
   .navbar-menu {
     display: none !important;
@@ -344,20 +353,29 @@
     line-height: 1.95rem !important;
   }
   .hero-subheading {
-    font-size: 1.1rem !important;
+    font-size: 0.72rem !important;
     line-height: 1.2 !important;
     margin-bottom: 1rem !important;
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 0.2rem !important;
+    gap: 0.12rem !important;
     white-space: normal !important;
-    overflow-x: visible !important;
+    overflow-x: hidden !important;
     width: 100% !important;
     max-width: 100% !important;
     text-align: center !important;
+  }
+  .hero-subheading > div > span {
+    padding: 0.35rem 0.55rem !important;
+    font-size: 0.48rem !important;
+    letter-spacing: 0.05em !important;
+  }
+  .hero-subheading > div > span + span,
+  .hero-subheading > div > span:not(:last-child) {
+    font-size: 0.55rem !important;
   }
   .hero-btn {
     font-size: 0.85rem !important;
@@ -375,6 +393,15 @@
     min-width: 120px !important;
     flex: 1 1 45% !important;
     margin-bottom: 0.2rem !important;
+  }
+  .hero-supporting-line > div {
+    gap: 0.4rem !important;
+    padding: 0.4rem 0.55rem !important;
+  }
+  .hero-supporting-text {
+    font-size: 0.78rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.1px !important;
   }
   .navbar-mobile-menu {
     top: 50px;

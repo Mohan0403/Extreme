@@ -121,11 +121,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="hero-subheading mb-6 flex w-full max-w-full flex-nowrap items-center justify-start gap-1 overflow-x-auto px-1 sm:justify-center sm:gap-2 sm:px-2"
+          className="hero-subheading mb-6 flex w-full max-w-full items-center justify-center px-1 sm:gap-2 sm:px-2"
           style={{
             fontFamily: 'inherit',
             fontWeight: 600,
-            fontSize: 'clamp(0.9rem, 1.5vw, 1.08rem)',
+            fontSize: 'clamp(0.7rem, 1.05vw, 1.08rem)',
             color: 'rgba(245,241,232,0.9)',
             letterSpacing: '0.45px',
             textShadow: '0 1px 8px rgba(0,0,0,0.35)',
@@ -136,16 +136,29 @@ export default function HeroSection() {
             MozOsxFontSmoothing: 'grayscale',
           }}
         >
-          {heroServices.map((service, index) => (
-            <div key={service} className="flex shrink-0 items-center gap-1 sm:gap-2">
-              <span className="whitespace-nowrap rounded-full border border-[#e4bf67]/30 bg-black/35 px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.11em] text-[#f1ebdb] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm sm:px-4 sm:text-[0.78rem]">
-                {service}
-              </span>
-              {index < heroServices.length - 1 ? (
-                <span className="text-[#e1bf67] text-[0.8rem] leading-none">✦</span>
-              ) : null}
-            </div>
-          ))}
+          <div className="grid w-full max-w-full grid-cols-2 gap-x-2 gap-y-2 sm:hidden">
+            <span className="whitespace-nowrap rounded-full border border-[#e4bf67]/30 bg-black/35 px-2 py-1.5 text-center text-[0.56rem] font-semibold uppercase tracking-[0.07em] text-[#f1ebdb] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm">
+              Luxury Detailing
+            </span>
+            <span className="whitespace-nowrap rounded-full border border-[#e4bf67]/30 bg-black/35 px-2 py-1.5 text-center text-[0.56rem] font-semibold uppercase tracking-[0.07em] text-[#f1ebdb] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm">
+              Paint Protection
+            </span>
+            <span className="col-span-2 justify-self-center whitespace-nowrap rounded-full border border-[#e4bf67]/30 bg-black/35 px-2 py-1.5 text-center text-[0.56rem] font-semibold uppercase tracking-[0.07em] text-[#f1ebdb] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm">
+              Custom Interiors
+            </span>
+          </div>
+          <div className="hidden w-full max-w-full items-center justify-center gap-0.5 sm:flex sm:gap-2">
+            {heroServices.map((service, index) => (
+              <div key={service} className="flex shrink-0 items-center gap-1 sm:gap-2">
+                <span className="whitespace-nowrap rounded-full border border-[#e4bf67]/30 bg-black/35 px-2.5 py-1.5 text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-[#f1ebdb] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-sm sm:px-4 sm:py-2 sm:text-[0.78rem]">
+                  {service}
+                </span>
+                {index < heroServices.length - 1 ? (
+                  <span className="text-[#e1bf67] text-[0.65rem] leading-none sm:text-[0.8rem]">✦</span>
+                ) : null}
+              </div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Supporting line */}
@@ -153,14 +166,14 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="mb-8 mt-0"
+          className="hero-supporting-line mb-8 mt-0"
         >
-          <div className="inline-flex items-center gap-3 rounded-full border border-[#e2c16a]/35 bg-black/30 px-5 py-2.5 shadow-[0_10px_20px_rgba(0,0,0,0.25)] backdrop-blur-sm">
-            <span className="h-px w-7 bg-gradient-to-r from-transparent to-[#e2c16a]/80" />
-            <span className="block" style={{fontFamily: 'inherit', fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)', color: 'rgba(247,241,226,0.95)', letterSpacing: '0.4px', fontWeight: 700, textShadow: '0 2px 9px rgba(0,0,0,0.42)' }}>
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#e2c16a]/35 bg-black/30 px-4 py-2 shadow-[0_10px_20px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+            <span className="h-px w-5 bg-gradient-to-r from-transparent to-[#e2c16a]/80" />
+            <span className="hero-supporting-text block" style={{fontFamily: 'inherit', fontSize: 'clamp(0.9rem, 1.5vw, 1.3rem)', color: 'rgba(247,241,226,0.95)', letterSpacing: '0.35px', fontWeight: 700, textShadow: '0 2px 9px rgba(0,0,0,0.42)' }}>
               Precision. Protection. Perfection.
             </span>
-            <span className="h-px w-7 bg-gradient-to-l from-transparent to-[#e2c16a]/80" />
+            <span className="h-px w-5 bg-gradient-to-l from-transparent to-[#e2c16a]/80" />
           </div>
         </motion.div>
 
